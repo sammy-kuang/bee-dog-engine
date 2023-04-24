@@ -3,32 +3,41 @@
 #include "components.hpp"
 #include "prefabs.hpp"
 #include "systems.hpp"
+#include <vector>
+#include <iostream>
+using std::vector;
 
-#define SCREEN_WIDTH 1600
-#define SCREEN_HEIGHT 900
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 450
 
 #define WINDOW_TITLE "bd-engine"
 
 int main(void)
 {
+    // ecs related variables
     entt::registry registry;
+    vector<System> systems;
 
+    // initialize raylib
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(60);
 
-    create_sprite_entity(registry, 0, 0, ASSETS_PATH "test.png");
-
-    auto view = registry.view<BDTransform, Sprite>();
+    // append systems
+    systems.push_back(draw_sprites);
+    systems.push_back(apply_velocity);
+    systems.push_back(player_controller);
+    auto entity = create_sprite_entity(registry, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, ASSETS_PATH"test.png");
+    registry.emplace<Velocity>(entity, 0.f, 0.f);
+    registry.emplace<Player>(entity);
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
-
         ClearBackground(RAYWHITE);
 
-        view.each([](auto &transform, auto sprite) {
-            DrawTexture(sprite.texture, (int)transform.x, (int)transform.y, WHITE);
-        });
+        for (auto &system : systems) {
+            system(registry);
+        }
 
         EndDrawing();
     }
