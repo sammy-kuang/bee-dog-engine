@@ -131,9 +131,12 @@ void handle_box_collisions(entt::registry &registry)
         auto h = e_bc.create_x_box(nx, ny);
         auto v = e_bc.create_y_box(nx, ny);
 
+        e_vel.cancel_x = false;
+        e_vel.cancel_y = false;
+
         for (auto &other : coll)
         {
-            if (entity == other) // we can't collide with ourselves
+            if (entity == other || e_vel.cancel_x || e_vel.cancel_y) // we can't collide with ourselves
                 continue;
 
             // check if entity is colliding with other
@@ -146,13 +149,8 @@ void handle_box_collisions(entt::registry &registry)
 
             if (!horizontal && !vertical)
             {
-                e_vel.cancel_x = false;
-                e_vel.cancel_y = false;
                 continue;
             }
-
-            e_vel.cancel_x = horizontal;
-            e_vel.cancel_y = vertical;
 
             if (horizontal)
             {

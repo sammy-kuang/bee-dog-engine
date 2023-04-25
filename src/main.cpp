@@ -31,9 +31,12 @@ int main(void)
     systems.push_back(debug_rendering);
 
     // create some entities
-    // auto one = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2);
-    auto two = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2);
+    auto one = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2);
+    auto two = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    auto three = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2);
     registry.emplace<Player>(two);
+
+
 
     auto view = registry.view<BDTransform>();
 
