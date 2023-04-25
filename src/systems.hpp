@@ -1,70 +1,194 @@
 #include "raylib.h"
 #include "entt.hpp"
 #include "components.hpp"
+#include "singletons.hpp"
 #include <vector>
+#include <iostream>
 
 #ifndef SYSTEMS_HPP
 #define SYSTEMS_HPP
 
-typedef void (*System)(entt::registry&);
+typedef void (*System)(entt::registry &);
 
 // all systems should follow the pattern
 // void system(entt::registry& register)
 
+
+
 // system to draw sprites given a transform
-void draw_sprites(entt::registry& registry) {
+void draw_sprites(entt::registry &registry)
+{
     auto view = registry.view<BDTransform, Sprite>();
 
-    view.each([](BDTransform &transform, Sprite &sprite) {
-        int width = sprite.texture.width;
-        int height = sprite.texture.height;
+    view.each([](BDTransform &transform, Sprite &sprite)
+              {
+        int width = sprite.texture.width * transform.scale;
+        int height = sprite.texture.height * transform.scale;
 
         Vector2 draw_pos = Vector2{transform.x - width / 2.f, transform.y - height / 2.f};
         // Vector2 size = sprite.texture;
 
-        DrawTextureEx(sprite.texture, draw_pos, transform.rotation, transform.scale, WHITE);
-    });
+        DrawTextureEx(sprite.texture, draw_pos, transform.rotation, transform.scale, WHITE); });
 }
 
 // system to apply velocity
-void apply_velocity(entt::registry& registry) {
+void apply_velocity(entt::registry &registry)
+{
     auto view = registry.view<BDTransform, Velocity>();
 
-    view.each([](BDTransform &transform, Velocity &velocity) {
+    view.each([](BDTransform &transform, Velocity &velocity)
+              {
         auto frame_time = GetFrameTime();
         float delta_x = velocity.x * frame_time;
         float delta_y = velocity.y * frame_time;
 
-        if (!velocity.cancel_tick) {
-            transform.x += delta_x;
-            transform.y += delta_y;
-        }
+        if (!velocity.cancel_x) transform.x += delta_x;
+        if (!velocity.cancel_y) transform.y += delta_y;
 
         velocity.x -= delta_x;
-        velocity.y -= delta_y;
-    });
+        velocity.y -= delta_y; });
 }
 
-void player_controller(entt::registry& registry) {
-    auto view = registry.view<Player, Velocity>();
+void sort_sprites_by_z(entt::registry &registry)
+{
+    registry.sort<BDTransform>([](const auto &l, const auto &r)
+                               { return l.z < r.z; });
+}
 
-    view.each([](auto &player, auto &v) {
-        if (IsKeyDown(KEY_W)) {
-            v.y = -250;
-        } else if (IsKeyDown(KEY_S)) {
-            v.y = 250;
-        } else {
-            v.y = 0;
-        }
+void player_controller(entt::registry &registry)
+{
+    auto view = registry.view<Player, Velocity, BDTransform>();
+    view.each([](auto &player, auto &v, BDTransform &t)
+              {
+                  if (IsKeyDown(KEY_W))
+                  {
+                      v.y = -250;
+                  }
+                  else if (IsKeyDown(KEY_S))
+                  {
+                      v.y = 250;
+                  }
+                  else
+                  {
+                      v.y = 0;
+                  }
 
-        if (IsKeyDown(KEY_A)) {
-            v.x = -250;
-        } else if (IsKeyDown(KEY_D)) {
-            v.x = 250;
-        } else {
-            v.x = 0;
+                  if (IsKeyDown(KEY_A))
+                  {
+                      v.x = -250;
+                  }
+                  else if (IsKeyDown(KEY_D))
+                  {
+                      v.x = 250;
+                  }
+                  else
+                  {
+                      v.x = 0;
+                  }
+
+                  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                  {
+                      t.z += 1;
+                  }
+                  else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+                  {
+                      t.z -= 1;
+                  }
+                  DrawCircle(t.x, t.y, 1.0f, RED); });
+}
+
+// system to handle box collisions for moving objects
+void handle_box_collisions(entt::registry &registry)
+{
+    auto view = registry.view<BDTransform, Velocity, BoxCollider>();
+    auto coll = registry.view<BDTransform, BoxCollider>();
+
+    for (auto &entity : view)
+    {
+        BDTransform &e_tr = registry.get<BDTransform>(entity);
+        Velocity &e_vel = registry.get<Velocity>(entity);
+        BoxCollider &e_bc = registry.get<BoxCollider>(entity);
+
+        e_bc.move(e_tr.x, e_tr.y); // make the collision box follow the transform
+
+        auto nx = e_tr.x + e_vel.x * GetFrameTime();
+        auto ny = e_tr.y + e_vel.y * GetFrameTime();
+
+        auto h = e_bc.create_x_box(nx, ny);
+        auto v = e_bc.create_y_box(nx, ny);
+
+        for (auto &other : coll)
+        {
+            if (entity == other) // we can't collide with ourselves
+                continue;
+
+            // check if entity is colliding with other
+            // if so, cancel current velocity
+            BDTransform &o_tr = registry.get<BDTransform>(other);
+            BoxCollider &o_bc = registry.get<BoxCollider>(other);
+
+            bool horizontal = CheckCollisionRecs(h, o_bc.box);
+            bool vertical = CheckCollisionRecs(v, o_bc.box);
+
+            if (!horizontal && !vertical)
+            {
+                e_vel.cancel_x = false;
+                e_vel.cancel_y = false;
+                continue;
+            }
+
+            e_vel.cancel_x = horizontal;
+            e_vel.cancel_y = vertical;
+
+            if (horizontal)
+            {
+                if (e_vel.x > 0 && o_tr.x > e_tr.x)
+                    e_vel.cancel_x = true;
+                else if (e_vel.x < 0 && o_tr.x < e_tr.x)
+                    e_vel.cancel_x = true;
+                else
+                    e_vel.cancel_x = false;
+            }
+            else
+            {
+                if (e_vel.y > 0 && o_tr.y > e_tr.y)
+                    e_vel.cancel_y = true;
+                else if (e_vel.y < 0 && o_tr.y < e_tr.y)
+                    e_vel.cancel_y = true;
+                else
+                    e_vel.cancel_y = false;
+            }
         }
-    });
+    }
+}
+
+// system to enable debug rendering (collisions primarily)
+void debug_rendering(entt::registry &registry)
+{
+    auto view = registry.view<BoxCollider, BDTransform, Velocity>();
+
+    view.each([](BoxCollider &bd, BDTransform &tr, Velocity &vel)
+              {
+        auto nx = tr.x + vel.x * GetFrameTime();
+        auto ny = tr.y + vel.y * GetFrameTime();
+
+        auto h = bd.create_x_box(nx, ny);
+        auto v = bd.create_y_box(nx, ny);
+
+        DrawRectangleLinesEx(h, 2.f, GREEN);
+        DrawRectangleLinesEx(v, 2.f, BLUE);
+        DrawRectangleLinesEx(bd.box, 2.f, RED); });
+
+    DrawFPS(0, 0);
+}
+
+// add "core" systems, such as sprite rendering, collision, velocity
+void add_core_systems(std::vector<System> &systems)
+{
+    systems.push_back(draw_sprites);
+    systems.push_back(apply_velocity);
+    systems.push_back(player_controller);
+    systems.push_back(handle_box_collisions);
 }
 
 #endif

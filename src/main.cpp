@@ -3,6 +3,7 @@
 #include "components.hpp"
 #include "prefabs.hpp"
 #include "systems.hpp"
+#include "singletons.hpp"
 #include <vector>
 #include <iostream>
 using std::vector;
@@ -18,17 +19,21 @@ int main(void)
     entt::registry registry;
     vector<System> systems;
 
+    // register singletons
+    register_singletons(registry);
+
     // initialize raylib
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(60);
 
     // append systems
-    systems.push_back(draw_sprites);
-    systems.push_back(apply_velocity);
-    systems.push_back(player_controller);
-    auto entity = create_sprite_entity(registry, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, ASSETS_PATH"test.png");
-    registry.emplace<Velocity>(entity, 0.f, 0.f);
-    registry.emplace<Player>(entity);
+    add_core_systems(systems);
+    systems.push_back(debug_rendering);
+
+    // create some entities
+    auto one = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2);
+    auto two = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2);
+    registry.emplace<Player>(two);
 
     while (!WindowShouldClose())
     {
