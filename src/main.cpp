@@ -8,8 +8,8 @@
 #include <iostream>
 using std::vector;
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 450
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 
 #define WINDOW_TITLE "bd-engine"
 
@@ -31,9 +31,11 @@ int main(void)
     systems.push_back(debug_rendering);
 
     // create some entities
-    auto one = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2);
+    // auto one = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2);
     auto two = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2);
     registry.emplace<Player>(two);
+
+    auto view = registry.view<BDTransform>();
 
     while (!WindowShouldClose())
     {
@@ -43,6 +45,10 @@ int main(void)
         for (auto &system : systems) {
             system(registry);
         }
+
+        view.each([](BDTransform &transform) {
+            transform.rotation += 360 * GetFrameTime();
+        });
 
         EndDrawing();
     }

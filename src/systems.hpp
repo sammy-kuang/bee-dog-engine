@@ -4,6 +4,7 @@
 #include "singletons.hpp"
 #include <vector>
 #include <iostream>
+#include <cmath>
 
 #ifndef SYSTEMS_HPP
 #define SYSTEMS_HPP
@@ -12,7 +13,6 @@ typedef void (*System)(entt::registry &);
 
 // all systems should follow the pattern
 // void system(entt::registry& register)
-
 
 
 // system to draw sprites given a transform
@@ -25,8 +25,21 @@ void draw_sprites(entt::registry &registry)
         int width = sprite.texture.width * transform.scale;
         int height = sprite.texture.height * transform.scale;
 
-        Vector2 draw_pos = Vector2{transform.x - width / 2.f, transform.y - height / 2.f};
-        // Vector2 size = sprite.texture;
+        // rotation calculations
+        // thanks jack
+        // https://github.com/j-ackyao
+        float r = sqrt(pow((width / 2.f), 2) + pow((height / 2.f), 2));
+        float x_0 = r * cos(PI / 4);
+        float y_0 = r * sin(PI / 4);
+
+        float theta = (transform.rotation * PI / 180.0) + PI / 4;
+        float x_1 = r * cos(theta);
+        float y_1 = r * sin (theta);
+
+        float x_f = -x_1 + x_0 + transform.x - width / 2;
+        float y_f = -y_1 + y_0 + transform.y - height / 2; 
+
+        Vector2 draw_pos{x_f, y_f};
 
         DrawTextureEx(sprite.texture, draw_pos, transform.rotation, transform.scale, WHITE); });
 }
@@ -88,16 +101,17 @@ void player_controller(entt::registry &registry)
 
                   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
                   {
-                      t.z += 1;
+                      t.rotation += 5;
                   }
                   else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
                   {
-                      t.z -= 1;
+                      t.rotation -= 5;
                   }
                   DrawCircle(t.x, t.y, 1.0f, RED); });
 }
 
 // system to handle box collisions for moving objects
+// thanks jack
 void handle_box_collisions(entt::registry &registry)
 {
     auto view = registry.view<BDTransform, Velocity, BoxCollider>();
