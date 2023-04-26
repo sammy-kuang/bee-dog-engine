@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "entt.hpp"
 #include "components.hpp"
+#include "systems.hpp"
 #include <string>
 
 #ifndef PREFABS_HPP
@@ -14,6 +15,8 @@ entt::entity create_sprite_entity(entt::registry &registry, std::string path, fl
     registry.emplace<Sprite>(entity, tex);
     registry.emplace<Velocity>(entity);
     registry.emplace<BoxCollider>(entity, Rectangle{(float)(x - tex.width / 2), (float)(y - tex.height / 2), (float)tex.width, (float)tex.height});
+
+    sort_sprites_by_z(registry);
 
     return entity;
 }

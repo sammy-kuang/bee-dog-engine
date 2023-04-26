@@ -136,7 +136,7 @@ void handle_box_collisions(entt::registry &registry)
 
         for (auto &other : coll)
         {
-            if (entity == other || e_vel.cancel_x || e_vel.cancel_y) // we can't collide with ourselves
+            if (entity == other || (e_vel.cancel_x && e_vel.cancel_y)) // we can't collide with ourselves
                 continue;
 
             // check if entity is colliding with other
@@ -198,9 +198,9 @@ void debug_rendering(entt::registry &registry)
 void add_core_systems(std::vector<System> &systems)
 {
     systems.push_back(draw_sprites);
+    systems.push_back(handle_box_collisions);
     systems.push_back(apply_velocity);
     systems.push_back(player_controller);
-    systems.push_back(handle_box_collisions);
 }
 
 #endif

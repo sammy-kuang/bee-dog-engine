@@ -31,27 +31,22 @@ int main(void)
     systems.push_back(debug_rendering);
 
     // create some entities
-    auto one = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2);
-    auto two = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-    auto three = create_sprite_entity(registry, ASSETS_PATH"gura.png", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2);
-    registry.emplace<Player>(two);
+    auto player = create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, -1.f);
+    registry.emplace<Player>(player);
+    auto &vel = registry.get<Velocity>(player);
 
-
-
-    auto view = registry.view<BDTransform>();
+    for (int i = 0; i < 10; i++)
+        create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2 - 400 + i * 100.1, SCREEN_HEIGHT / 2 + 200);
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        for (auto &system : systems) {
+        for (auto &system : systems)
+        {
             system(registry);
         }
-
-        view.each([](BDTransform &transform) {
-            transform.rotation += 360 * GetFrameTime();
-        });
 
         EndDrawing();
     }
