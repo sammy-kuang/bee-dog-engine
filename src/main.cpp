@@ -4,6 +4,7 @@
 #include "prefabs.hpp"
 #include "systems.hpp"
 #include "singletons.hpp"
+#include "engine.hpp"
 #include <vector>
 #include <iostream>
 using std::vector;
@@ -37,6 +38,7 @@ int main(void)
 
     for (int i = 0; i < 10; i++)
         create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2 - 400 + i * 100.1, SCREEN_HEIGHT / 2 + 200);
+
 
     while (!WindowShouldClose())
     {

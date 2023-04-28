@@ -1,7 +1,9 @@
 #include "raylib.h"
+#include "raymath.h"
 #include "entt.hpp"
 #include "components.hpp"
 #include "singletons.hpp"
+#include "engine.hpp"
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -13,7 +15,6 @@ typedef void (*System)(entt::registry &);
 
 // all systems should follow the pattern
 // void system(entt::registry& register)
-
 
 // system to draw sprites given a transform
 void draw_sprites(entt::registry &registry)
@@ -71,43 +72,56 @@ void sort_sprites_by_z(entt::registry &registry)
 void player_controller(entt::registry &registry)
 {
     auto view = registry.view<Player, Velocity, BDTransform>();
-    view.each([](auto &player, auto &v, BDTransform &t)
-              {
-                  if (IsKeyDown(KEY_W))
-                  {
-                      v.y = -250;
-                  }
-                  else if (IsKeyDown(KEY_S))
-                  {
-                      v.y = 250;
-                  }
-                  else
-                  {
-                      v.y = 0;
-                  }
 
-                  if (IsKeyDown(KEY_A))
-                  {
-                      v.x = -250;
-                  }
-                  else if (IsKeyDown(KEY_D))
-                  {
-                      v.x = 250;
-                  }
-                  else
-                  {
-                      v.x = 0;
-                  }
+    for (auto &player : view)
+    {
+        BDTransform &t = registry.get<BDTransform>(player);
+        Velocity &v = registry.get<Velocity>(player);
+        if (IsKeyDown(KEY_W))
+        {
+            v.y = -250;
+        }
+        else if (IsKeyDown(KEY_S))
+        {
+            v.y = 250;
+        }
+        else
+        {
+            v.y = 0;
+        }
 
-                  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-                  {
-                      t.rotation += 5;
-                  }
-                  else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
-                  {
-                      t.rotation -= 5;
-                  }
-                  DrawCircle(t.x, t.y, 1.0f, RED); });
+        if (IsKeyDown(KEY_A))
+        {
+            v.x = -250;
+        }
+        else if (IsKeyDown(KEY_D))
+        {
+            v.x = 250;
+        }
+        else
+        {
+            v.x = 0;
+        }
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            t.rotation += 5;
+        }
+        else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+        {
+            t.rotation -= 5;
+        }
+        DrawCircle(t.x, t.y, 1.0f, RED);
+
+        // testing raycast
+        Vector2 player_pos = Vector2{t.x, t.y+53};
+        Vector2 hit_position = Vector2{0, 0};
+        bool hit = fire_raycast(registry, player_pos, Vector2{0, 1}, 200, hit_position);
+
+        DrawLineEx(player_pos, hit_position, 5.f, VIOLET);
+        std::cout << std::boolalpha;
+        std::cout << hit << "\n";
+    }
 }
 
 // system to handle box collisions for moving objects
