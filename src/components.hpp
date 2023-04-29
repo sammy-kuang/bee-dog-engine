@@ -45,4 +45,8 @@ struct Sprite {
     Texture2D texture;
 };
 
+struct Floor {
+    int id = 0;
+};
+
 #endif

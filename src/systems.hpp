@@ -113,14 +113,19 @@ void player_controller(entt::registry &registry)
         }
         DrawCircle(t.x, t.y, 1.0f, RED);
 
-        // testing raycast
-        Vector2 player_pos = Vector2{t.x, t.y+53};
-        Vector2 hit_position = Vector2{0, 0};
-        bool hit = fire_raycast(registry, player_pos, Vector2{0, 1}, 200, hit_position);
+        float dst = 200;
+        Vector2 dir = Vector2{0, 1};
+        entt::entity hit = entt::null;
 
-        DrawLineEx(player_pos, hit_position, 5.f, VIOLET);
-        std::cout << std::boolalpha;
-        std::cout << hit << "\n";
+        bool h = fire_raycast<Floor>(registry, Vector2{t.x, t.y}, dir, dst, hit);
+
+        if (h) {
+            BDTransform &b = registry.get<BDTransform>(hit);
+            DrawLine(t.x, t.y, b.x, b.y, GREEN);
+        } else {
+            DrawLine(t.x, t.y, t.x, t.y + dst, RED);
+        }
+
     }
 }
 

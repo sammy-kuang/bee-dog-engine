@@ -25,6 +25,7 @@ int main(void)
 
     // initialize raylib
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
+    InitAudioDevice();
     SetTargetFPS(60);
 
     // append systems
@@ -37,8 +38,10 @@ int main(void)
     auto &vel = registry.get<Velocity>(player);
 
     for (int i = 0; i < 10; i++)
-        create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2 - 400 + i * 100.1, SCREEN_HEIGHT / 2 + 200);
-
+    {
+        auto entity = create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2 - 400 + i * 100.1, SCREEN_HEIGHT / 2 + 200);
+        registry.emplace<Floor>(entity);
+    }
 
     while (!WindowShouldClose())
     {
