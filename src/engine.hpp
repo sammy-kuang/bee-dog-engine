@@ -44,10 +44,10 @@ bool fire_raycast_first(entt::registry &registry, Vector2 position, Vector2 dire
 
 // Fire a raycast in direction with length distance
 // Returns the first entity hit by the raycast that has component T into out
-template <typename T>
+template <typename T, typename...Ts>
 bool fire_raycast(entt::registry &registry, Vector2 position, Vector2 direction, float distance, entt::entity &out)
 {
-    auto view = registry.view<BoxCollider, T>();
+    auto view = registry.view<BoxCollider, T, Ts...>();
     float travelled = 0.f;
 
     while (travelled < distance)
@@ -71,4 +71,31 @@ bool fire_raycast(entt::registry &registry, Vector2 position, Vector2 direction,
     return false;
 }
 
+// Fire a raycast in direction with length distance
+// Returns a list of entities hit by the raycast that has component T
+template <typename T, typename...Ts>
+std::vector<entt::entity> fire_raycast_mult(entt::registry &registry, Vector2 position, Vector2 direction, float distance)
+{
+    auto view = registry.view<BoxCollider, T, Ts...>();
+    float travelled = 0.f;
+    std::vector<entt::entity> entities;
+
+    while (travelled < distance)
+    {
+        for (auto &entity : view)
+        {
+            BoxCollider &b = registry.get<BoxCollider>(entity);
+
+            if (CheckCollisionPointRec(position, b.box) && std::find(entities.begin(), entities.end(), entity) == entities.end())
+            {
+                entities.push_back(entity);
+            }
+        }
+        position = Vector2Add(position, direction);
+        travelled += Vector2Length(direction);
+    }
+
+    return entities;
+
+}
 #endif

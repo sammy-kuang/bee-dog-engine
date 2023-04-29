@@ -114,18 +114,17 @@ void player_controller(entt::registry &registry)
         DrawCircle(t.x, t.y, 1.0f, RED);
 
         float dst = 200;
-        Vector2 dir = Vector2{0, 1};
-        entt::entity hit = entt::null;
+        Vector2 dir = Vector2{1, 0};
+        DrawLine(t.x, t.y, t.x + dst, t.y, RED);
 
-        bool h = fire_raycast<Floor>(registry, Vector2{t.x, t.y}, dir, dst, hit);
 
-        if (h) {
-            BDTransform &b = registry.get<BDTransform>(hit);
-            DrawLine(t.x, t.y, b.x, b.y, GREEN);
-        } else {
-            DrawLine(t.x, t.y, t.x, t.y + dst, RED);
+        std::vector<entt::entity> entities = fire_raycast_mult<Floor>(registry, Vector2{t.x, t.y}, dir, dst);
+
+        for (auto &entity : entities) {
+            BDTransform &b = registry.get<BDTransform>(entity);
+
+            b.rotation += 100 * GetFrameTime();
         }
-
     }
 }
 
