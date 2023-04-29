@@ -72,6 +72,7 @@ void sort_sprites_by_z(entt::registry &registry)
 void player_controller(entt::registry &registry)
 {
     auto view = registry.view<Player, Velocity, BDTransform>();
+    auto camera_view = registry.view<Camera2D>();
 
     for (auto &player : view)
     {
@@ -113,22 +114,31 @@ void player_controller(entt::registry &registry)
         }
         DrawCircle(t.x, t.y, 1.0f, RED);
 
+        Camera2D &c = registry.ctx().get<Camera2D>();
 
-        Vector2 m_pos = GetMousePosition();
+        Vector2 m_pos = GetScreenToWorld2D(GetMousePosition(), c);
         float dst = Vector2Distance(Vector2{t.x, t.y}, m_pos);
         Vector2 dir = Vector2Normalize(Vector2Subtract(m_pos, Vector2{t.x, t.y}));
         Vector2 hit_pos = Vector2{0, 0};
         auto entity = fire_raycast<Floor>(registry, Vector2{t.x, t.y}, dir, dst, hit_pos);
 
-        if (entity != entt::null) {
+        if (entity != entt::null)
+        {
             DrawLine(t.x, t.y, hit_pos.x, hit_pos.y, GREEN);
 
             BDTransform &b = registry.get<BDTransform>(entity);
-            b.rotation += 100 * GetFrameTime();
-        } else {
+            if (hit_pos.x < b.x)
+                b.rotation -= 50 * GetFrameTime();
+            else
+                b.rotation += 50 * GetFrameTime();
+        }
+        else
+        {
             DrawLine(t.x, t.y, m_pos.x, m_pos.y, RED);
         }
-        
+
+        // update the camera
+        c.target = Vector2{t.x - GetScreenWidth() / 2, t.y - GetScreenHeight() / 2};
     }
 }
 
@@ -196,6 +206,13 @@ void handle_box_collisions(entt::registry &registry)
     }
 }
 
+// system to draw the screen relative to the camera
+// there should only be one camera in the registry
+void camera_system(entt::registry &registry)
+{
+    BeginMode2D(registry.ctx().get<Camera2D>());
+}
+
 // system to enable debug rendering (collisions primarily)
 void debug_rendering(entt::registry &registry)
 {
@@ -212,13 +229,12 @@ void debug_rendering(entt::registry &registry)
         DrawRectangleLinesEx(h, 2.f, GREEN);
         DrawRectangleLinesEx(v, 2.f, BLUE);
         DrawRectangleLinesEx(bd.box, 2.f, RED); });
-
-    DrawFPS(0, 0);
 }
 
 // add "core" systems, such as sprite rendering, collision, velocity
 void add_core_systems(std::vector<System> &systems)
 {
+    systems.push_back(camera_system);
     systems.push_back(draw_sprites);
     systems.push_back(handle_box_collisions);
     systems.push_back(apply_velocity);

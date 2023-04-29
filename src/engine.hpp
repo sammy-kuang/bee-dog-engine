@@ -63,8 +63,13 @@ std::vector<entt::entity> fire_raycast_mult(entt::registry &registry, Vector2 po
         position = Vector2Add(position, direction);
         travelled += Vector2Length(direction);
     }
-
     return entities;
-
 }
+
+// Create and add the camera to the registry's context
+void add_camera(entt::registry &registry) {
+    registry.ctx().emplace<Camera2D>(Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f);
+}
+
+
 #endif
