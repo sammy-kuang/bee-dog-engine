@@ -113,18 +113,22 @@ void player_controller(entt::registry &registry)
         }
         DrawCircle(t.x, t.y, 1.0f, RED);
 
-        float dst = 200;
-        Vector2 dir = Vector2{1, 0};
-        DrawLine(t.x, t.y, t.x + dst, t.y, RED);
 
+        Vector2 m_pos = GetMousePosition();
+        float dst = Vector2Distance(Vector2{t.x, t.y}, m_pos);
+        Vector2 dir = Vector2Normalize(Vector2Subtract(m_pos, Vector2{t.x, t.y}));
+        Vector2 hit_pos = Vector2{0, 0};
+        auto entity = fire_raycast<Floor>(registry, Vector2{t.x, t.y}, dir, dst, hit_pos);
 
-        std::vector<entt::entity> entities = fire_raycast_mult<Floor>(registry, Vector2{t.x, t.y}, dir, dst);
+        if (entity != entt::null) {
+            DrawLine(t.x, t.y, hit_pos.x, hit_pos.y, GREEN);
 
-        for (auto &entity : entities) {
             BDTransform &b = registry.get<BDTransform>(entity);
-
             b.rotation += 100 * GetFrameTime();
+        } else {
+            DrawLine(t.x, t.y, m_pos.x, m_pos.y, RED);
         }
+        
     }
 }
 
