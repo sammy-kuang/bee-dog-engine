@@ -139,6 +139,14 @@ void player_controller(entt::registry &registry)
 
         // update the camera
         c.target = Vector2{t.x - GetScreenWidth() / 2, t.y - GetScreenHeight() / 2};
+
+
+        // get the box area
+        BoxArea &ba = registry.get<BoxArea>(player);
+
+        for (auto& e : ba.get_colliding_entities(registry)) {
+            registry.destroy(e);
+        }
     }
 }
 
@@ -206,6 +214,17 @@ void handle_box_collisions(entt::registry &registry)
     }
 }
 
+// move the box areas in a similar manner to box collisions
+void move_box_areas(entt::registry &registry) {
+    auto view = registry.view<BDTransform, BoxArea>();
+
+    for (auto &entity : view) {
+        BDTransform &t = registry.get<BDTransform>(entity);
+        BoxArea &b = registry.get<BoxArea>(entity);
+        b.move(t.x, t.y);
+    }
+}
+
 // system to draw the screen relative to the camera
 // there should only be one camera in the registry
 void camera_system(entt::registry &registry)
@@ -216,9 +235,9 @@ void camera_system(entt::registry &registry)
 // system to enable debug rendering (collisions primarily)
 void debug_rendering(entt::registry &registry)
 {
-    auto view = registry.view<BoxCollider, BDTransform, Velocity>();
+    auto view = registry.view<BoxCollider, BoxArea, BDTransform, Velocity>();
 
-    view.each([](BoxCollider &bd, BDTransform &tr, Velocity &vel)
+    view.each([](BoxCollider &bd, BoxArea &ba, BDTransform &tr, Velocity &vel)
               {
         auto nx = tr.x + vel.x * GetFrameTime();
         auto ny = tr.y + vel.y * GetFrameTime();
@@ -228,7 +247,11 @@ void debug_rendering(entt::registry &registry)
 
         DrawRectangleLinesEx(h, 2.f, GREEN);
         DrawRectangleLinesEx(v, 2.f, BLUE);
-        DrawRectangleLinesEx(bd.box, 2.f, RED); });
+        DrawRectangleLinesEx(bd.box, 2.f, RED); 
+        DrawRectangleRec(ba.box, Color{102, 191, 255, 100});
+        
+        });
+        
 }
 
 // add "core" systems, such as sprite rendering, collision, velocity
@@ -237,6 +260,7 @@ void add_core_systems(std::vector<System> &systems)
     systems.push_back(camera_system);
     systems.push_back(draw_sprites);
     systems.push_back(handle_box_collisions);
+    systems.push_back(move_box_areas);
     systems.push_back(apply_velocity);
     systems.push_back(player_controller);
 }
