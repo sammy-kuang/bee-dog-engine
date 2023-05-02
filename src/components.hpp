@@ -53,8 +53,19 @@ struct BoxArea
 
     void move(int x, int y)
     {
-        box.x = x - (box.width+COLLISION_THRESHOLD) / 2;
-        box.y = y - (box.height+COLLISION_THRESHOLD) / 2;
+        box.x = x - (box.width + get_margin()) / 2;
+        box.y = y - (box.height + get_margin()) / 2;
+    }
+
+    float get_margin()
+    {
+        return COLLISION_THRESHOLD * 1.6f;
+    }
+
+    Rectangle create_area_rectangle()
+    {
+
+        return Rectangle{box.x, box.y, box.width + get_margin(), box.height + get_margin()};
     }
 
     vector<entt::entity> get_colliding_entities(entt::registry &registry)
@@ -71,9 +82,7 @@ struct BoxArea
             BoxCollider &b = registry.get<BoxCollider>(entity);
             auto b_box = b.box;
 
-            auto r = Rectangle{box.x, box.y, box.width + COLLISION_THRESHOLD, box.height + COLLISION_THRESHOLD};
-
-            if (CheckCollisionRecs(r, b_box))
+            if (CheckCollisionRecs(create_area_rectangle(), b_box))
                 list.push_back(entity);
         }
 

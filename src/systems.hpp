@@ -143,10 +143,7 @@ void player_controller(entt::registry &registry)
 
         // get the box area
         BoxArea &ba = registry.get<BoxArea>(player);
-
-        for (auto& e : ba.get_colliding_entities(registry)) {
-            registry.destroy(e);
-        }
+        std::cout << "entity count: " << ba.get_colliding_entities(registry).size() << "\n";
     }
 }
 
@@ -248,7 +245,7 @@ void debug_rendering(entt::registry &registry)
         DrawRectangleLinesEx(h, 2.f, GREEN);
         DrawRectangleLinesEx(v, 2.f, BLUE);
         DrawRectangleLinesEx(bd.box, 2.f, RED); 
-        DrawRectangleRec(ba.box, Color{102, 191, 255, 100});
+        DrawRectangleRec(ba.create_area_rectangle(), Color{102, 191, 255, 150});
         
         });
         
