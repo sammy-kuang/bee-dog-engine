@@ -23,8 +23,8 @@ void draw_sprites(entt::registry &registry)
 
     view.each([](BDTransform &transform, Sprite &sprite)
               {
-        int width = sprite.texture.width * transform.scale;
-        int height = sprite.texture.height * transform.scale;
+        int width = (int)(sprite.texture.width * transform.scale);
+        int height = (int)(sprite.texture.height * transform.scale);
 
         // rotation calculations
         // thanks jack
@@ -115,35 +115,22 @@ void player_controller(entt::registry &registry)
         DrawCircle(t.x, t.y, 1.0f, RED);
 
         Camera2D &c = registry.ctx().get<Camera2D>();
-
-        Vector2 m_pos = GetScreenToWorld2D(GetMousePosition(), c);
-        float dst = Vector2Distance(Vector2{t.x, t.y}, m_pos);
-        Vector2 dir = Vector2Normalize(Vector2Subtract(m_pos, Vector2{t.x, t.y}));
-        Vector2 hit_pos = Vector2{0, 0};
-        auto entity = fire_raycast<Floor>(registry, Vector2{t.x, t.y}, dir, dst, hit_pos);
-
-        if (entity != entt::null)
-        {
-            DrawLine(t.x, t.y, hit_pos.x, hit_pos.y, GREEN);
-
-            BDTransform &b = registry.get<BDTransform>(entity);
-            if (hit_pos.x < b.x)
-                b.rotation -= 50 * GetFrameTime();
-            else
-                b.rotation += 50 * GetFrameTime();
-        }
-        else
-        {
-            DrawLine(t.x, t.y, m_pos.x, m_pos.y, RED);
-        }
-
         // update the camera
         c.target = Vector2{t.x - GetScreenWidth() / 2, t.y - GetScreenHeight() / 2};
 
+        Vector2 down_hit, up_hit, left_hit, right_hit;
+        Vector2 cur = Vector2{ t.x, t.y };
 
-        // get the box area
-        BoxArea &ba = registry.get<BoxArea>(player);
-        std::cout << "entity count: " << ba.get_colliding_entities(registry).size() << "\n";
+        auto down = fire_raycast<Floor>(registry, cur, Vector2{ 0, 1 }, 100.f, down_hit);
+        auto up = fire_raycast<Floor>(registry, cur, Vector2{ 0, -1 }, 100.f, up_hit);
+        auto left = fire_raycast<Floor>(registry, cur, Vector2{ -1, 0 }, 100.f, left_hit);
+        auto right = fire_raycast<Floor>(registry, cur, Vector2{ 1, 0 }, 100.f, right_hit);
+
+        DrawLineV(cur, down_hit, down == entt::null ? RED : GREEN);
+        DrawLineV(cur, up_hit, up == entt::null ? RED : GREEN);
+        DrawLineV(cur, left_hit, left== entt::null ? RED : GREEN);
+        DrawLineV(cur, right_hit, right == entt::null ? RED : GREEN);
+
     }
 }
 

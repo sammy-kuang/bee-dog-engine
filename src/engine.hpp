@@ -20,7 +20,7 @@ entt::entity fire_raycast(entt::registry &registry, Vector2 position, Vector2 di
     {
         for (auto &entity : view)
         {
-            BoxCollider &b = registry.get<BoxCollider>(entity);
+            BoxCollider& b = registry.get<BoxCollider>(entity);
 
             if (CheckCollisionPointRec(position, b.box))
             {

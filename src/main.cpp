@@ -9,6 +9,9 @@
 #include <iostream>
 using std::vector;
 
+#include "imgui/imgui.h"
+#include "imgui/rlImGui.h"
+
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
@@ -41,29 +44,41 @@ int main(void)
     registry.emplace<Player>(player);
     auto &vel = registry.get<Velocity>(player);
 
-
     for (int i = 0; i < 10; i++)
     {
         auto entity = create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2 - 400 + i * 100.1, SCREEN_HEIGHT / 2 + 200 + GetRandomValue(-10, 10));
         registry.emplace<Floor>(entity);
     }
 
+    rlImGuiSetup(true);
+
     while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(RAYWHITE);
+        rlImGuiBegin();
 
         for (auto &system : systems)
         {
             system(registry);
         }
 
-        EndMode2D(); // only has any effect if a camera exists
+        for (auto &ui_system : ui_systems)
+        {
+            ui_system(registry);
+        }
 
+        EndMode2D(); // only has any effect if a camera exists
         DrawFPS(0, 0);
 
+        bool open = true;
+        ImGui::ShowDemoWindow(&open);
+
+        rlImGuiEnd();
         EndDrawing();
     }
+
+    rlImGuiShutdown();
 
     CloseWindow();
 
