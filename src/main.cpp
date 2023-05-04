@@ -7,13 +7,13 @@
 #include "engine.hpp"
 #include <vector>
 #include <iostream>
-using std::vector;
-
 #include "imgui/imgui.h"
 #include "imgui/rlImGui.h"
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+using std::vector;
+
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 900
 
 #define WINDOW_TITLE "bd-engine"
 
@@ -30,7 +30,7 @@ int main(void)
     // initialize raylib
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     InitAudioDevice();
-    SetTargetFPS(60);
+    SetTargetFPS(120);
 
     // append systems
     add_core_systems(systems);
@@ -39,24 +39,35 @@ int main(void)
     // create the camera
     add_camera(registry);
 
+    Texture2D tex = LoadTexture(ASSETS_PATH "gura.png");
+
     // create some entities
-    auto player = create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, -1.f);
+    auto player = create_sprite_entity(registry, tex, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, -1.f);
     registry.emplace<Player>(player);
     auto &vel = registry.get<Velocity>(player);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1000; i++)
     {
-        auto entity = create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2 - 400 + i * 100.1, SCREEN_HEIGHT / 2 + 200 + GetRandomValue(-10, 10));
+        auto entity = create_sprite_entity(registry, tex, SCREEN_WIDTH / 2 - 400 + i * 100.1, SCREEN_HEIGHT / 2 + 200 + GetRandomValue(-10, 10));
         registry.emplace<Floor>(entity);
     }
 
     rlImGuiSetup(true);
+
+    int x = 0;
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         rlImGuiBegin();
+
+        auto view = registry.view<Invisible>();
+        
+        if (++x % 20 == 0) {
+            std::cout << "invisible entities: " << view.size() << "\n";
+            x = 0;
+        }
 
         for (auto &system : systems)
         {
@@ -67,12 +78,10 @@ int main(void)
         {
             ui_system(registry);
         }
-
+        
+        
         EndMode2D(); // only has any effect if a camera exists
         DrawFPS(0, 0);
-
-        bool open = true;
-        ImGui::ShowDemoWindow(&open);
 
         rlImGuiEnd();
         EndDrawing();

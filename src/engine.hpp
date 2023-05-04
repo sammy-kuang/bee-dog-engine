@@ -13,7 +13,7 @@
 template <typename T, typename...Ts>
 entt::entity fire_raycast(entt::registry &registry, Vector2 position, Vector2 direction, float distance, Vector2 &hit_position)
 {
-    auto view = registry.view<BoxCollider, T, Ts...>();
+    auto view = registry.view<BoxCollider, T, Ts...>(entt::exclude<Invisible>);
     float travelled = 0.f;
 
     while (travelled < distance)
@@ -45,7 +45,7 @@ entt::entity fire_raycast(entt::registry &registry, Vector2 position, Vector2 di
 template <typename T, typename...Ts>
 std::vector<entt::entity> fire_raycast_mult(entt::registry &registry, Vector2 position, Vector2 direction, float distance)
 {
-    auto view = registry.view<BoxCollider, T, Ts...>();
+    auto view = registry.view<BoxCollider, T, Ts...>(entt::exclude<Invisible>);
     float travelled = 0.f;
     std::vector<entt::entity> entities;
 
