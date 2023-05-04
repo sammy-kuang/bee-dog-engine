@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "entt.hpp"
+#include "entt/entt.hpp"
 #include "components.hpp"
 #include "singletons.hpp"
 #include "engine.hpp"
@@ -8,8 +8,6 @@
 #include <iostream>
 #include <cmath>
 #include <string>
-#include <format>
-#include <format>
 
 #ifndef SYSTEMS_HPP
 #define SYSTEMS_HPP
@@ -267,10 +265,10 @@ void debug_rendering(entt::registry& registry)
 			auto h = bd.create_x_box(nx, ny);
 			auto v = bd.create_y_box(nx, ny);
 
-			DrawRectangleLinesEx(h, 2.f, GREEN);
-			DrawRectangleLinesEx(v, 2.f, BLUE);
-			DrawRectangleLinesEx(bd.box, 2.f, RED);
-			DrawRectangleRec(ba.create_area_rectangle(), Color{ 102, 191, 255, 150 });
+			DrawRectangleLinesEx(h, 1.f, GREEN);
+			DrawRectangleLinesEx(v, 1.f, BLUE);
+			DrawRectangleLinesEx(bd.box, 1.f, RED);
+			//DrawRectangleRec(ba.create_area_rectangle(), Color{ 102, 191, 255, 125 });
 
 		});
 

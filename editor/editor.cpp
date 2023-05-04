@@ -1,25 +1,37 @@
 #include "raylib.h"
+#include "imgui/imgui.h"
+#include "imgui/rlImGui.h"
 
 int main(void)
 {
-    const int screenWidth = 1600;
-    const int screenHeight = 900;
-    Vector2 cameraPos;
+	const int screenWidth = 1600;
+	const int screenHeight = 900;
+	Vector2 cameraPos;
 
-    InitWindow(screenWidth, screenHeight, "bd-engine editor");
+	InitWindow(screenWidth, screenHeight, "bd-engine editor");
 
-    SetTargetFPS(60);
+	SetTargetFPS(60);
 
-    while (!WindowShouldClose())
-    {
-        BeginDrawing();
+	rlImGuiSetup(true);
 
-        ClearBackground(RAYWHITE);
+	while (!WindowShouldClose())
+	{
+		BeginDrawing();
 
-        EndDrawing();
-    }
+		ClearBackground(RAYWHITE);
+		rlImGuiBegin();
+	
+		ImGui::Begin("Demo window");
+		ImGui::Button("Hello!");
+		ImGui::End();
 
-    CloseWindow();
+		rlImGuiEnd();
+		EndDrawing();
+	}
 
-    return 0;
+	rlImGuiShutdown();
+
+	CloseWindow();
+
+	return 0;
 }

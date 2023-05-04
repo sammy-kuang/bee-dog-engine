@@ -1,11 +1,12 @@
+#include <vector>
+
 #include "raylib.h"
-#include "entt.hpp"
+#include "entt/entt.hpp"
 #include "components.hpp"
 #include "prefabs.hpp"
 #include "systems.hpp"
 #include "singletons.hpp"
 #include "engine.hpp"
-#include <vector>
 #include <iostream>
 #include "imgui/imgui.h"
 #include "imgui/rlImGui.h"
@@ -15,7 +16,7 @@ using std::vector;
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
 
-#define WINDOW_TITLE "bd-engine"
+#define WINDOW_TITLE "bee dog engine"
 
 int main(void)
 {
@@ -46,7 +47,7 @@ int main(void)
     registry.emplace<Player>(player);
     auto &vel = registry.get<Velocity>(player);
 
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 100; i++)
     {
         auto entity = create_sprite_entity(registry, tex, SCREEN_WIDTH / 2 - 400 + i * 100.1, SCREEN_HEIGHT / 2 + 200 + GetRandomValue(-10, 10));
         registry.emplace<Floor>(entity);
@@ -54,20 +55,11 @@ int main(void)
 
     rlImGuiSetup(true);
 
-    int x = 0;
-
     while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         rlImGuiBegin();
-
-        auto view = registry.view<Invisible>();
-        
-        if (++x % 20 == 0) {
-            std::cout << "invisible entities: " << view.size() << "\n";
-            x = 0;
-        }
 
         for (auto &system : systems)
         {

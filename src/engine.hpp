@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "entt.hpp"
+#include "entt/entt.hpp"
 #include "components.hpp"
 #include <vector>
 #include <algorithm>
