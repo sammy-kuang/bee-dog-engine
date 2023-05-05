@@ -1,8 +1,9 @@
 #include "raylib.h"
 #include "entt/entt.hpp"
 #include <vector>
+#include <string>
 
-using std::vector;
+using std::vector, std::string;
 
 #ifndef COMPONENTS_HPP
 #define COMPONENTS_HPP
@@ -14,6 +15,10 @@ struct BDTransform
 	float z = 0;
 	float rotation = 0;
 	float scale = 1;
+};
+
+struct Name {
+	std::string name;
 };
 
 struct Velocity

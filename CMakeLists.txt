@@ -16,6 +16,7 @@ FetchContent_MakeAvailable(raylib)
 # Adding our source files
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp") # Define PROJECT_SOURCES as a list of all source files
 set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/") # Define PROJECT_INCLUDE to be the path to the include directory of the project
+set(ENGINE "${CMAKE_CURRENT_LIST_DIR}/engine/")
 
 message("-- Added vendors")
 # Declare other projects
@@ -25,6 +26,7 @@ file (GLOB_RECURSE VENDORS CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/vendor/*
 add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES} ${VENDORS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
+target_include_directories(${PROJECT_NAME} PRIVATE ${ENGINE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/vendor/)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
@@ -38,6 +40,7 @@ file(GLOB_RECURSE editor_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/ed
 add_executable(editor)
 target_sources(editor PRIVATE ${editor_sources} ${VENDORS})
 target_include_directories(editor PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/)
+target_include_directories(editor PRIVATE ${ENGINE})
 target_link_libraries(editor PRIVATE raylib)
 
 # Setting ASSETS_PATH
