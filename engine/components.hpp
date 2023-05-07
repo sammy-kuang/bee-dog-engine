@@ -103,7 +103,7 @@ struct Player
 
 struct Sprite
 {
-	Texture2D texture;
+	const char* path;
 };
 
 struct Floor

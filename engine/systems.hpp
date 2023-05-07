@@ -2,7 +2,7 @@
 #include "raymath.h"
 #include "entt/entt.hpp"
 #include "components.hpp"
-#include "singletons.hpp"
+#include "resources.hpp"
 #include "engine.hpp"
 #include <vector>
 #include <iostream>
@@ -25,9 +25,10 @@ void draw_sprites(entt::registry& registry)
 	for (auto& entity : view) {
 		BDTransform& transform = registry.get<BDTransform>(entity);
 		Sprite& sprite = registry.get<Sprite>(entity);
+		auto texture = registry.ctx().get<TextureCache>().load_resource(sprite.path);
 
-		int width = (int)(sprite.texture.width * transform.scale);
-		int height = (int)(sprite.texture.height * transform.scale);
+		int width = (int)(texture.width * transform.scale);
+		int height = (int)(texture.height * transform.scale);
 
 		// rotation calculations
 		// thanks jack
@@ -46,11 +47,11 @@ void draw_sprites(entt::registry& registry)
 			float y_f = -y_1 + y_0 + transform.y - height / 2;
 
 			Vector2 draw_pos{ x_f, y_f };
-			DrawTextureEx(sprite.texture, draw_pos, transform.rotation, transform.scale, WHITE);
+			DrawTextureEx(texture, draw_pos, transform.rotation, transform.scale, WHITE);
 		}
 		else {
 			Vector2 draw_pos{ transform.x - width / 2, transform.y - height / 2 };
-			DrawTextureEx(sprite.texture, draw_pos, transform.rotation, transform.scale, WHITE);
+			DrawTextureEx(texture, draw_pos, transform.rotation, transform.scale, WHITE);
 		}
 	}
 
@@ -233,8 +234,9 @@ void camera_system(entt::registry& registry)
 		BDTransform& transform = registry.get<BDTransform>(entity);
 		Rectangle comparison = Rectangle{ 0, 0, 0, 0 };
 		if (registry.try_get<Sprite>(entity) != nullptr) {
-			auto s = registry.get<Sprite>(entity).texture;
-			comparison = Rectangle{ transform.x - s.width / 2.f, transform.y -  s.height / 2.f, (float)s.width, (float)s.height};
+			auto s = registry.get<Sprite>(entity);
+			auto texture = registry.ctx().get<TextureCache>().load_resource(s.path);
+			comparison = Rectangle{ transform.x - texture.width / 2.f, transform.y -  texture.width / 2.f, (float)texture.width, (float)texture.height};
 		}
 		else if (registry.try_get<BoxCollider>(entity) != nullptr) {
 			auto s = registry.get<BoxCollider>(entity).box;
@@ -259,8 +261,8 @@ void debug_rendering(entt::registry& registry)
 
 	view.each([](BoxCollider& bd, BoxArea& ba, BDTransform& tr, Velocity& vel)
 		{
-			auto nx = tr.x + vel.x * GetFrameTime();
-			auto ny = tr.y + vel.y * GetFrameTime();
+			auto nx = (int)(tr.x + vel.x * GetFrameTime());
+			auto ny = (int)(tr.y + vel.y * GetFrameTime());
 
 			auto h = bd.create_x_box(nx, ny);
 			auto v = bd.create_y_box(nx, ny);
