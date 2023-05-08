@@ -39,11 +39,12 @@ int main(void)
 	add_camera(registry);
 
 	// initialize resource caches
-	registry.ctx().emplace<TextureCache>();
-	auto save_file = ASSETS_PATH "save.json";
+	add_ctx(registry);
+
+
+	auto save_file = ASSETS_PATH "save.level";
 
 	if (!FileExists(save_file)) {
-
 		//create some entities
 		auto player = create_sprite_entity(registry, "gura.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, -1.f);
 		registry.emplace<Player>(player);
@@ -56,10 +57,6 @@ int main(void)
 			auto entity = create_sprite_entity(registry, "gura.png", (float)(SCREEN_WIDTH / 2 - 400 + i * 100.1), (float)(SCREEN_HEIGHT / 2 + 200 + GetRandomValue(-10, 10)));
 			registry.emplace<Floor>(entity);
 		}
-
-	}
-	else {
-		debug_load(registry, save_file);
 	}
 
 	for (auto& system : initialization_systems)
@@ -92,7 +89,6 @@ int main(void)
 		EndDrawing();
 	}
 
-	debug_serialize(registry, save_file);
 	rlImGuiShutdown();
 
 	CloseWindow();
