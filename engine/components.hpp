@@ -1,5 +1,7 @@
 #include "raylib.h"
 #include "entt/entt.hpp"
+#include "cereal/cereal.hpp"
+#include "cereal/types/string.hpp"
 #include <vector>
 #include <string>
 
@@ -15,6 +17,23 @@ struct BDTransform
 	float z = 0;
 	float rotation = 0;
 	float scale = 1;
+
+	template<class Archive>
+	void serialize(Archive& archive) {
+		archive(x, y, z, rotation, scale);
+	}
+};
+
+struct Sprite
+{
+	std::string path{};
+
+	friend class cereal::access;
+
+	template<class Archive>
+	void serialize(Archive& archive) {
+		archive(path);
+	}
 };
 
 struct Name {
@@ -27,6 +46,11 @@ struct Velocity
 	float y = 0;
 	bool cancel_x = false;
 	bool cancel_y = false;
+
+	template<class Archive>
+	void serialize(Archive& archive) {
+		archive(x, y, cancel_x, cancel_y);
+	}
 };
 
 static int COLLISION_THRESHOLD = 5;
@@ -49,6 +73,11 @@ struct BoxCollider
 	Rectangle create_y_box(int nx, int ny)
 	{
 		return Rectangle{ (float)(nx + COLLISION_THRESHOLD - box.width / 2), (float)(ny - box.height / 2), box.width - COLLISION_THRESHOLD * 2, box.height };
+	}
+
+	template<class Archive>
+	void serialize(Archive& archive) {
+		archive(box);
 	}
 };
 
@@ -93,17 +122,21 @@ struct BoxArea
 
 		return list;
 	}
+
+	template<class Archive>
+	void serialize(Archive& archive) {
+		archive(box);
+	}
+
 };
 
 struct Player
 {
-	int id;
-};
-
-
-struct Sprite
-{
-	const char* path;
+	int id = 0;
+	template<class Archive>
+	void serialize(Archive& archive) {
+		archive(id);
+	}
 };
 
 struct Floor

@@ -1,6 +1,8 @@
 #include <map>
 #include <iostream>
+#include <string>
 #include "raylib.h"
+
 
 #ifndef RESOURCES_HPP
 #define RESOURCES_HPP
@@ -8,27 +10,38 @@
 // i don't really like how entt handles resource handles
 // so im going to deploy my own, which is probably less efficient
 
+std::string get_asset_path(std::string resource_name) {
+	if (DirectoryExists("assets/"))
+		return "assets/" + resource_name;
+	else if (DirectoryExists("../../../assets/")) // vs2022
+		return "../../../assets/" + resource_name;
+	else if (DirectoryExists("../assets/")) // vscode
+		return "../assets/"+resource_name;
+
+	return "!! FAILED TO FIND" + resource_name;
+}
+
 template<typename T>
 class ResourceCache {
 public:
-	virtual T fetch_resource_from_rl(const char* path) {
+	virtual T fetch_resource_from_rl(std::string resource_name) {
 		return T();
 	}
 
-	T load_resource(const char* path) {
-		if (cache.find(path) == cache.end()) {
-			cache[path] = fetch_resource_from_rl(path);
+	T load_resource(std::string resource_name) {
+		if (cache.find(resource_name) == cache.end()) {
+			cache[resource_name] = fetch_resource_from_rl(resource_name);
 		}
-		return cache[path];
+		return cache[resource_name];
 	}
 private:
-	std::map<const char*, T> cache;
+	std::map<std::string, T> cache;
 };
 
 class TextureCache : public ResourceCache<Texture2D> {
 public:
-	Texture2D fetch_resource_from_rl(const char* path) {
-		return LoadTexture(path);
+	Texture2D fetch_resource_from_rl(std::string resource_name) {
+		return LoadTexture(get_asset_path(resource_name).c_str());
 	}
 };
 

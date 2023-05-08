@@ -148,12 +148,12 @@ void player_controller(entt::registry& registry)
 
 // move collision boxes to the transform position
 void move_box_collisions(entt::registry& registry) {
-	auto view = registry.view<BDTransform, BoxCollider>(); 
+	auto view = registry.view<BDTransform, BoxCollider>();
 
 	for (auto& entity : view) {
 		BDTransform& tr = registry.get<BDTransform>(entity);
 		BoxCollider& bd = registry.get<BoxCollider>(entity);
-		
+
 		bd.move(tr.x, tr.y);
 	}
 }
@@ -163,7 +163,7 @@ void move_box_collisions(entt::registry& registry) {
 void handle_box_collisions(entt::registry& registry)
 {
 	auto view = registry.view<BDTransform, Velocity, BoxCollider>();
-	auto coll = registry.view<BDTransform, BoxCollider>(entt::exclude<Invisible>);
+	auto coll = registry.view<BDTransform, BoxCollider>();
 
 	for (auto& entity : view)
 	{
@@ -236,7 +236,7 @@ void camera_system(entt::registry& registry)
 		if (registry.try_get<Sprite>(entity) != nullptr) {
 			auto s = registry.get<Sprite>(entity);
 			auto texture = registry.ctx().get<TextureCache>().load_resource(s.path);
-			comparison = Rectangle{ transform.x - texture.width / 2.f, transform.y -  texture.width / 2.f, (float)texture.width, (float)texture.height};
+			comparison = Rectangle{ transform.x - texture.width / 2.f, transform.y - texture.width / 2.f, (float)texture.width, (float)texture.height };
 		}
 		else if (registry.try_get<BoxCollider>(entity) != nullptr) {
 			auto s = registry.get<BoxCollider>(entity).box;
@@ -257,9 +257,17 @@ void camera_system(entt::registry& registry)
 // system to enable debug rendering (collisions primarily)
 void debug_rendering(entt::registry& registry)
 {
-	auto view = registry.view<BoxCollider, BoxArea, BDTransform, Velocity>(entt::exclude<Invisible>);
+	auto collisions = registry.view<BoxCollider>(entt::exclude<Invisible>);
+	auto vel_box = registry.view<BoxCollider, Velocity, BDTransform>(entt::exclude<Invisible>);
+	auto areas = registry.view<BoxArea>(entt::exclude<Invisible>);
 
-	view.each([](BoxCollider& bd, BoxArea& ba, BDTransform& tr, Velocity& vel)
+	collisions.each([](BoxCollider& bd)
+		{
+			DrawRectangleLinesEx(bd.box, 1.f, RED);
+
+		});
+
+	vel_box.each([](BoxCollider& bd, Velocity &vel,  BDTransform& tr)
 		{
 			auto nx = (int)(tr.x + vel.x * GetFrameTime());
 			auto ny = (int)(tr.y + vel.y * GetFrameTime());
@@ -269,9 +277,11 @@ void debug_rendering(entt::registry& registry)
 
 			DrawRectangleLinesEx(h, 1.f, GREEN);
 			DrawRectangleLinesEx(v, 1.f, BLUE);
-			DrawRectangleLinesEx(bd.box, 1.f, RED);
-			//DrawRectangleRec(ba.create_area_rectangle(), Color{ 102, 191, 255, 125 });
 
+		});
+
+	areas.each([](BoxArea& ba) {
+		DrawRectangleRec(ba.create_area_rectangle(), Color{ 102, 191, 255, 125 });
 		});
 
 }

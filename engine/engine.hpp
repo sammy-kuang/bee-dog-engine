@@ -1,9 +1,11 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "entt/entt.hpp"
-#include "components.hpp"
 #include <vector>
 #include <algorithm>
+#include <string>
+#include "components.hpp"
+
 
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
@@ -70,6 +72,5 @@ std::vector<entt::entity> fire_raycast_mult(entt::registry &registry, Vector2 po
 void add_camera(entt::registry &registry) {
     registry.ctx().emplace<Camera2D>(Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f);
 }
-
 
 #endif

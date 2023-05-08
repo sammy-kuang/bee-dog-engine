@@ -19,6 +19,7 @@ set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/") # Define PROJECT_INCLUDE t
 set(ENGINE "${CMAKE_CURRENT_LIST_DIR}/engine/")
 
 message("-- Added vendors")
+
 # Declare other projects
 file (GLOB_RECURSE VENDORS CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/vendor/*.cpp")
 

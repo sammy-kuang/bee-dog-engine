@@ -3,11 +3,10 @@
 #include "raylib.h"
 #include "entt/entt.hpp"
 #include "components.hpp"
-#include "serializer.hpp"
-#include "prefabs.hpp"
 #include "systems.hpp"
 #include "resources.hpp"
-#include "engine.hpp"
+#include "prefabs.hpp"
+#include "serializer.hpp"
 #include <iostream>
 #include "imgui/imgui.h"
 #include "imgui/rlImGui.h"
@@ -27,12 +26,10 @@ int main(void)
 	vector<System> systems;
 	vector<System> ui_systems;
 
-
 	// initialize raylib
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
 	InitAudioDevice();
-	SetTargetFPS(120);
-
+	SetTargetFPS(60);
 
 	// append systems
 	add_core_systems(systems);
@@ -43,18 +40,26 @@ int main(void)
 
 	// initialize resource caches
 	registry.ctx().emplace<TextureCache>();
+	auto save_file = ASSETS_PATH "save.json";
 
-	// create some entities
-	auto player = create_sprite_entity(registry, ASSETS_PATH "gura.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, -1.f);
-	registry.emplace<Player>(player);
-	auto& vel = registry.get<Velocity>(player);
+	if (!FileExists(save_file)) {
 
-	int rand = GetRandomValue(1, 10);
-	std::cout << "Generating " << rand << " entities\n";
-	for (int i = 0; i < rand; i++)
-	{
-		auto entity = create_sprite_entity(registry, ASSETS_PATH "gura.png", (float)(SCREEN_WIDTH / 2 - 400 + i * 100.1), (float)(SCREEN_HEIGHT / 2 + 200 + GetRandomValue(-10, 10)));
-		registry.emplace<Floor>(entity);
+		//create some entities
+		auto player = create_sprite_entity(registry, "gura.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, -1.f);
+		registry.emplace<Player>(player);
+		auto& vel = registry.get<Velocity>(player);
+
+		int rand = GetRandomValue(1, 10);
+		std::cout << "Generating " << rand << " entities\n";
+		for (int i = 0; i < rand; i++)
+		{
+			auto entity = create_sprite_entity(registry, "gura.png", (float)(SCREEN_WIDTH / 2 - 400 + i * 100.1), (float)(SCREEN_HEIGHT / 2 + 200 + GetRandomValue(-10, 10)));
+			registry.emplace<Floor>(entity);
+		}
+
+	}
+	else {
+		debug_load(registry, save_file);
 	}
 
 	for (auto& system : initialization_systems)
@@ -87,6 +92,7 @@ int main(void)
 		EndDrawing();
 	}
 
+	debug_serialize(registry, save_file);
 	rlImGuiShutdown();
 
 	CloseWindow();
