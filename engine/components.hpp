@@ -2,6 +2,7 @@
 #include "entt/entt.hpp"
 #include "cereal/cereal.hpp"
 #include "cereal/types/string.hpp"
+#include "resources.hpp"
 #include <vector>
 #include <string>
 
@@ -70,6 +71,16 @@ struct BoxCollider
 		box.y = y - box.height / 2;
 	}
 
+	void rebase_on_sprite(entt::registry& registry, entt::entity entity) {
+		auto sprite = registry.try_get<Sprite>(entity);
+
+		if (sprite != nullptr) {
+			auto tex = registry.ctx().get<TextureCache>().load_resource(sprite->path);
+			box.width = tex.width;
+			box.height = tex.height;
+		}
+	}
+
 	Rectangle create_x_box(int nx, int ny)
 	{
 		return Rectangle{ (float)(nx - box.width / 2), (float)(ny + COLLISION_THRESHOLD - box.height / 2), box.width, box.height - COLLISION_THRESHOLD * 2 };
@@ -99,6 +110,16 @@ struct BoxArea
 	float get_margin()
 	{
 		return COLLISION_THRESHOLD * 1.6f;
+	}
+
+	void rebase_on_sprite(entt::registry& registry, entt::entity entity) {
+		auto sprite = registry.try_get<Sprite>(entity);
+
+		if (sprite != nullptr) {
+			auto tex = registry.ctx().get<TextureCache>().load_resource(sprite->path);
+			box.width = tex.width;
+			box.height = tex.height;
+		}
 	}
 
 	Rectangle create_area_rectangle()

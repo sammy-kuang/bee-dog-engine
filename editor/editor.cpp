@@ -13,12 +13,14 @@ using std::vector, std::string;
 int main(void)
 {
 	entt::registry registry;
+	vector<System> systems;
 	Editor editor;
 	const int screen_width = 1600;
 	const int screen_height = 900;
 
 	//create_temp_entitites(registry);
 	add_ctx(registry);
+	add_move_systems(systems);
 
 	InitWindow(screen_width, screen_height, "bee dog editor");
 	SetTargetFPS(60);
@@ -42,6 +44,10 @@ int main(void)
 		EndMode2D();
 
 		rlImGuiBegin();
+
+		for (auto& system : systems) {
+			system(registry);
+		}
 
 		draw_scene_hierarchy(registry, editor);
 		draw_inspector(registry, editor);

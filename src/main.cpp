@@ -41,7 +41,6 @@ int main(void)
 	// initialize resource caches
 	add_ctx(registry);
 
-
 	auto save_file = ASSETS_PATH "save.level";
 
 	if (!FileExists(save_file)) {

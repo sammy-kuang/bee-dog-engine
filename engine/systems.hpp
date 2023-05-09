@@ -267,7 +267,7 @@ void debug_rendering(entt::registry& registry)
 
 		});
 
-	vel_box.each([](BoxCollider& bd, Velocity &vel,  BDTransform& tr)
+	vel_box.each([](BoxCollider& bd, Velocity& vel, BDTransform& tr)
 		{
 			auto nx = (int)(tr.x + vel.x * GetFrameTime());
 			auto ny = (int)(tr.y + vel.y * GetFrameTime());
@@ -286,11 +286,16 @@ void debug_rendering(entt::registry& registry)
 
 }
 
+
+void add_move_systems(std::vector<System>& systems) {
+	systems.push_back(move_box_collisions);
+	systems.push_back(move_box_areas);
+}
+
 // add "core" systems, such as sprite rendering, collision, velocity
 void add_core_systems(std::vector<System>& systems)
 {
-	systems.push_back(move_box_collisions);
-	systems.push_back(move_box_areas);
+	add_move_systems(systems);
 	systems.push_back(camera_system);
 	systems.push_back(draw_sprites);
 	systems.push_back(handle_box_collisions);
