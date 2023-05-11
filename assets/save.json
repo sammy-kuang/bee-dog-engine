@@ -1,0 +1,139 @@
+{
+    "value0": 6,
+    "value1": 4293918724,
+    "value2": 3145727,
+    "value3": 1048577,
+    "value4": 2,
+    "value5": 3,
+    "value6": 1048576,
+    "value7": 3,
+    "value8": 2,
+    "value9": {
+        "value0": -100.0,
+        "value1": 100.0,
+        "value2": 0.0,
+        "value3": 0.0,
+        "value4": 1.0
+    },
+    "value10": 3,
+    "value11": {
+        "value0": 0.0,
+        "value1": -200.0,
+        "value2": 0.0,
+        "value3": 0.0,
+        "value4": 1.0
+    },
+    "value12": 1048577,
+    "value13": {
+        "value0": 200.0,
+        "value1": 0.0,
+        "value2": 0.0,
+        "value3": 0.0,
+        "value4": 1.0
+    },
+    "value14": 3,
+    "value15": 2,
+    "value16": {
+        "value0": "gura.png"
+    },
+    "value17": 3,
+    "value18": {
+        "value0": "senko.png"
+    },
+    "value19": 1048577,
+    "value20": {
+        "value0": "gura.png"
+    },
+    "value21": 3,
+    "value22": 2,
+    "value23": {
+        "value0": {
+            "value0": -150.0,
+            "value1": 50.0,
+            "value2": 100.0,
+            "value3": 100.0
+        }
+    },
+    "value24": 3,
+    "value25": {
+        "value0": {
+            "value0": -100.0,
+            "value1": -256.5,
+            "value2": 200.0,
+            "value3": 113.0
+        }
+    },
+    "value26": 1048577,
+    "value27": {
+        "value0": {
+            "value0": 150.0,
+            "value1": -50.0,
+            "value2": 100.0,
+            "value3": 100.0
+        }
+    },
+    "value28": 3,
+    "value29": 2,
+    "value30": {
+        "value0": {
+            "value0": -154.0,
+            "value1": 46.0,
+            "value2": 100.0,
+            "value3": 100.0
+        }
+    },
+    "value31": 3,
+    "value32": {
+        "value0": {
+            "value0": -104.0,
+            "value1": -260.5,
+            "value2": 200.0,
+            "value3": 113.0
+        }
+    },
+    "value33": 1048577,
+    "value34": {
+        "value0": {
+            "value0": 146.0,
+            "value1": -54.0,
+            "value2": 100.0,
+            "value3": 100.0
+        }
+    },
+    "value35": 3,
+    "value36": 2,
+    "value37": {
+        "value0": 0.0,
+        "value1": 0.0,
+        "value2": false,
+        "value3": false
+    },
+    "value38": 3,
+    "value39": {
+        "value0": 0.0,
+        "value1": 0.0,
+        "value2": false,
+        "value3": false
+    },
+    "value40": 1048577,
+    "value41": {
+        "value0": 0.0,
+        "value1": 0.0,
+        "value2": false,
+        "value3": false
+    },
+    "value42": 0,
+    "value43": 3,
+    "value44": 2,
+    "value45": {
+        "value0": "4"
+    },
+    "value46": 3,
+    "value47": {
+        "value0": "5"
+    },
+    "value48": 1048577,
+    "value49": {
+        "value0": "6"
+    }
+}

@@ -1,12 +1,9 @@
-#include "raylib.h"
-
 #include "editor.hpp"
 #include "scene_hierarchy.hpp"
 #include "inspector.hpp"
 #include "systems.hpp"
 
 #include <vector>
-#include <string>
 
 using std::vector, std::string;
 

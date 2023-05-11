@@ -41,13 +41,9 @@ int main(void)
 	// initialize resource caches
 	add_ctx(registry);
 
-	auto save_file = ASSETS_PATH "save.level";
+	auto save_file = ASSETS_PATH "save.json";
 
 	if (!FileExists(save_file)) {
-		//create some entities
-		auto player = create_sprite_entity(registry, "gura.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, -1.f);
-		registry.emplace<Player>(player);
-		auto& vel = registry.get<Velocity>(player);
 
 		int rand = GetRandomValue(1, 10);
 		std::cout << "Generating " << rand << " entities\n";
@@ -57,6 +53,14 @@ int main(void)
 			registry.emplace<Floor>(entity);
 		}
 	}
+	else {
+		load_level(registry, "save.json");
+	}
+
+	//create player
+	auto player = create_sprite_entity(registry, "gura.png", 0, 0, -1.f);
+	registry.emplace<Player>(player);
+	auto& vel = registry.get<Velocity>(player);
 
 	for (auto& system : initialization_systems)
 	{
