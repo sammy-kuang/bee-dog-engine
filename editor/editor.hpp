@@ -5,6 +5,7 @@
 #include "resources.hpp"
 #include "serializer.hpp"
 #include "raylib.h"
+#include "imgui/entt_imgui.hpp"
 
 #ifndef EDITOR_HPP
 #define EDITOR_HPP

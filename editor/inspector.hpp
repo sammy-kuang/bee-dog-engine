@@ -2,59 +2,70 @@
 #include "editor.hpp"
 #include "imgui/imgui_stdlib.h"
 #include <iostream>
+#include <map>
 
 #ifndef INSPECTOR_HPP
 #define INSPECTOR_HPP
 
-void draw_inspector(entt::registry& registry, Editor& editor) {
-	ImGui::SetNextWindowSize(ImVec2(250, 900/2), ImGuiCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(0, 900/2), ImGuiCond_Once);
+// Credits go to: https://github.com/Green-Sky/imgui_entt_entity_editor
+// For the license of the original code, check vendor/imgui/entt_imgui.hpp
+
+void draw_inspector(entt::registry& registry, Editor& editor, ComponentRegistrar<entt::entity> cr) {
+	ImGui::SetNextWindowSize(ImVec2(250, 900 / 2), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(0, 900 / 2), ImGuiCond_Once);
 	ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
-	if (editor.current_entity != entt::null && editor.current_entity != entt::tombstone) {
-		auto entity = editor.current_entity;
-		auto transform = registry.try_get<BDTransform>(entity);
-		auto sprite = registry.try_get<Sprite>(entity);
-		auto box_collider = registry.try_get<BoxCollider>(entity);
-		auto box_area = registry.try_get<BoxArea>(entity);
-		auto name = registry.try_get<Name>(entity);
+	if (registry.valid(editor.current_entity)) {
+		ImGui::PushID(static_cast<int>(entt::to_integral(editor.current_entity)));
+		std::map<entt::id_type, ComponentInfo> has_not;
+		auto e = editor.current_entity;
+		for (auto& [component_type_id, ci] : cr.component_infos) {
+			if (cr.entityHasComponent(registry, editor.current_entity, component_type_id)) {
+				ImGui::PushID(component_type_id);
+				if (ImGui::Button("-")) {
+					ci.destroy(registry, e);
+					ImGui::PopID();
+					continue; // early out to prevent access to deleted data
+				}
+				else {
+					ImGui::SameLine();
+				}
 
-		if (name != nullptr) {
-			ImGui::SeparatorText("Name");
-			ImGui::InputText("", &name->name, ImGuiInputTextFlags_EnterReturnsTrue);
+				if (ImGui::CollapsingHeader(ci.name.c_str())) {
+					ImGui::Indent(30.f);
+					ImGui::PushID("Widget");
+					ci.widget(registry, e);
+					ImGui::PopID();
+					ImGui::Unindent(30.f);
+				}
+				ImGui::PopID();
+			}
+			else {
+				has_not[component_type_id] = ci;
+			}
 		}
 
-		if (transform != nullptr) {
-			ImGui::SeparatorText("Transform");
-			ImGui::InputFloat("x", &transform->x);
-			ImGui::InputFloat("y", &transform->y);
-			ImGui::InputFloat("z", &transform->z);
-			ImGui::InputFloat("Rotation", &transform->rotation);
-			ImGui::InputFloat("Scale", &transform->scale);
-		}
+		if (!has_not.empty()) {
+			if (ImGui::Button("+ Add Component")) {
+				ImGui::OpenPopup("Add Component");
+			}
 
-		if (sprite != nullptr) {
-			ImGui::SeparatorText("Sprite");
-			ImGui::InputText("Resource", &sprite->path, ImGuiInputTextFlags_EnterReturnsTrue);
-		}
+			if (ImGui::BeginPopup("Add Component")) {
+				ImGui::TextUnformatted("Available:");
+				ImGui::Separator();
 
-		if (box_collider != nullptr) {
-			ImGui::SeparatorText("Box Collider");
-			ImGui::PushID("BoxCollider");
-			ImGui::InputFloat("Width", &box_collider->box.width);
-			ImGui::InputFloat("Height", &box_collider->box.height);
-			if (ImGui::Button("Rebase on Sprite")) box_collider->rebase_on_sprite(registry, entity);
-			ImGui::PopID();
+				for (auto& [component_type_id, ci] : has_not) {
+					ImGui::PushID(component_type_id);
+					if (ImGui::Selectable(ci.name.c_str())) {
+						ci.create(registry, e);
+					}
+					ImGui::PopID();
+				}
+				ImGui::EndPopup();
+			}
 		}
+		ImGui::PopID();
 
-		if (box_area != nullptr) {
-			ImGui::SeparatorText("Box Area");
-			ImGui::PushID("BoxArea");
-			ImGui::InputFloat("Width", &box_area->box.width);
-			ImGui::InputFloat("Height", &box_area->box.height);
-			if (ImGui::Button("Rebase on Sprite")) box_area->rebase_on_sprite(registry, entity);
-			ImGui::PopID();
-		}
 	}
 	else {
 		ImGui::Text("Nothing to see here...");

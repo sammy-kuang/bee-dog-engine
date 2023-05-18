@@ -2,10 +2,13 @@
 #include "scene_hierarchy.hpp"
 #include "inspector.hpp"
 #include "systems.hpp"
+#include "component_registrar.hpp"
 
 #include <vector>
 
 using std::vector, std::string;
+
+
 
 int main(void)
 {
@@ -18,6 +21,7 @@ int main(void)
 	//create_temp_entitites(registry);
 	add_ctx(registry);
 	add_move_systems(systems);
+	auto& cr = add_registrar(registry);
 
 	InitWindow(screen_width, screen_height, "bee dog editor");
 	SetTargetFPS(60);
@@ -31,7 +35,6 @@ int main(void)
 	{
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-
 		BeginMode2D(camera);
 
 		camera.target = camera_pos;
@@ -47,7 +50,7 @@ int main(void)
 		}
 
 		draw_scene_hierarchy(registry, editor);
-		draw_inspector(registry, editor);
+		draw_inspector(registry, editor, cr);
 
 		rlImGuiEnd();
 
