@@ -35,11 +35,11 @@ void draw_sprites(entt::registry& registry)
 		// https://github.com/j-ackyao
 
 		if (transform.rotation != 0) {
-			float r = sqrt(pow((width / 2.f), 2) + pow((height / 2.f), 2));
+			float r = (float)sqrt(pow((width / 2.f), 2) + pow((height / 2.f), 2));
 			float x_0 = r * cos(PI / 4);
 			float y_0 = r * sin(PI / 4);
 
-			float theta = (transform.rotation * PI / 180.0) + PI / 4;
+			float theta = (float)((transform.rotation * PI / 180.0) + PI / 4);
 			float x_1 = r * cos(theta);
 			float y_1 = r * sin(theta);
 
@@ -125,24 +125,10 @@ void player_controller(entt::registry& registry)
 		{
 			t.rotation -= 5;
 		}
-		DrawCircle(t.x, t.y, 1.0f, RED);
 
 		Camera2D& c = registry.ctx().get<Camera2D>();
 		// update the camera
 		c.target = Vector2{ t.x - GetScreenWidth() / 2, t.y - GetScreenHeight() / 2 };
-
-		Vector2 down_hit, up_hit, left_hit, right_hit;
-		Vector2 cur = Vector2{ t.x, t.y };
-
-		auto down = fire_raycast<Floor>(registry, cur, Vector2{ 0, 1 }, 100.f, down_hit);
-		auto up = fire_raycast<Floor>(registry, cur, Vector2{ 0, -1 }, 100.f, up_hit);
-		auto left = fire_raycast<Floor>(registry, cur, Vector2{ -1, 0 }, 100.f, left_hit);
-		auto right = fire_raycast<Floor>(registry, cur, Vector2{ 1, 0 }, 100.f, right_hit);
-
-		DrawLineV(cur, down_hit, down == entt::null ? RED : GREEN);
-		DrawLineV(cur, up_hit, up == entt::null ? RED : GREEN);
-		DrawLineV(cur, left_hit, left == entt::null ? RED : GREEN);
-		DrawLineV(cur, right_hit, right == entt::null ? RED : GREEN);
 	}
 }
 
@@ -154,7 +140,7 @@ void move_box_collisions(entt::registry& registry) {
 		BDTransform& tr = registry.get<BDTransform>(entity);
 		BoxCollider& bd = registry.get<BoxCollider>(entity);
 
-		bd.move(tr.x, tr.y);
+		bd.move((int)tr.x, (int)tr.y);
 	}
 }
 
@@ -171,8 +157,8 @@ void handle_box_collisions(entt::registry& registry)
 		Velocity& e_vel = registry.get<Velocity>(entity);
 		BoxCollider& e_bc = registry.get<BoxCollider>(entity);
 
-		auto nx = e_tr.x + e_vel.x * GetFrameTime();
-		auto ny = e_tr.y + e_vel.y * GetFrameTime();
+		auto nx = (int)(e_tr.x + e_vel.x * GetFrameTime());
+		auto ny = (int)(e_tr.y + e_vel.y * GetFrameTime());
 
 		auto h = e_bc.create_x_box(nx, ny);
 		auto v = e_bc.create_y_box(nx, ny);
@@ -217,7 +203,7 @@ void move_box_areas(entt::registry& registry) {
 	for (auto& entity : view) {
 		BDTransform& t = registry.get<BDTransform>(entity);
 		BoxArea& b = registry.get<BoxArea>(entity);
-		b.move(t.x, t.y);
+		b.move((int)t.x, (int)t.y);
 	}
 }
 
@@ -236,11 +222,11 @@ void camera_system(entt::registry& registry)
 		if (registry.try_get<Sprite>(entity) != nullptr) {
 			auto s = registry.get<Sprite>(entity);
 			auto texture = registry.ctx().get<TextureCache>().load_resource(s.path);
-			comparison = Rectangle{ transform.x - texture.width / 2.f, transform.y - texture.width / 2.f, (float)texture.width, (float)texture.height };
+			comparison = Rectangle{ transform.x - texture.width / 2.f, transform.y - texture.height / 2.f, (float)texture.width, (float)texture.height };
 		}
 		else if (registry.try_get<BoxCollider>(entity) != nullptr) {
 			auto s = registry.get<BoxCollider>(entity).box;
-			comparison = Rectangle{ transform.x, transform.y, (float)s.width, (float)s.height };
+			comparison = Rectangle{ s.x, s.y, (float)s.width, (float)s.height };
 		}
 
 		bool visible = registry.try_get<Invisible>(entity) == nullptr;

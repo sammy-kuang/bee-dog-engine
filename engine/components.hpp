@@ -76,8 +76,8 @@ struct BoxCollider
 
 		if (sprite != nullptr) {
 			auto tex = registry.ctx().get<TextureCache>().load_resource(sprite->path);
-			box.width = tex.width;
-			box.height = tex.height;
+			box.width = (float)tex.width;
+			box.height = (float)tex.height;
 		}
 	}
 
@@ -117,8 +117,8 @@ struct BoxArea
 
 		if (sprite != nullptr) {
 			auto tex = registry.ctx().get<TextureCache>().load_resource(sprite->path);
-			box.width = tex.width;
-			box.height = tex.height;
+			box.width = (float)tex.width;
+			box.height = (float)tex.height;
 		}
 	}
 
@@ -173,6 +173,12 @@ struct Floor
 // component to indicate that an entity should always been updated
 struct AlwaysRender {
 	int id;
+
+	template<class Archive>
+	void serialize(Archive& archive) {
+		archive(id);
+	}
+
 };
 
 // component to indicate that an entity should not be updated

@@ -19,6 +19,14 @@ void draw_inspector(entt::registry& registry, Editor& editor, ComponentRegistrar
 		ImGui::PushID(static_cast<int>(entt::to_integral(editor.current_entity)));
 		std::map<entt::id_type, ComponentInfo> has_not;
 		auto e = editor.current_entity;
+		auto name = registry.try_get<Name>(e);
+	
+		if (registry.try_get<Name>(e) != nullptr) {
+			ImGui::Text("Name:");
+			ImGui::SameLine();
+			ImGui::InputText("", &name->name);
+		}
+
 		for (auto& [component_type_id, ci] : cr.component_infos) {
 			if (cr.entityHasComponent(registry, editor.current_entity, component_type_id)) {
 				ImGui::PushID(component_type_id);
@@ -31,7 +39,7 @@ void draw_inspector(entt::registry& registry, Editor& editor, ComponentRegistrar
 					ImGui::SameLine();
 				}
 
-				if (ImGui::CollapsingHeader(ci.name.c_str())) {
+				if (ImGui::CollapsingHeader(ci.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 					ImGui::Indent(30.f);
 					ImGui::PushID("Widget");
 					ci.widget(registry, e);

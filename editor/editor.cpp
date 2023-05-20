@@ -42,7 +42,6 @@ int main(void)
 		debug_rendering(registry);
 
 		EndMode2D();
-
 		rlImGuiBegin();
 
 		for (auto& system : systems) {
@@ -53,7 +52,6 @@ int main(void)
 		draw_inspector(registry, editor, cr);
 
 		rlImGuiEnd();
-
 		EndDrawing();
 	}
 

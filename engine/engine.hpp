@@ -62,7 +62,6 @@ std::vector<entt::entity> fire_raycast_mult(entt::registry& registry, Vector2 po
 		for (auto& entity : view)
 		{
 			BoxCollider& b = registry.get<BoxCollider>(entity);
-
 			if (CheckCollisionPointRec(position, b.box) && std::find(entities.begin(), entities.end(), entity) == entities.end())
 			{
 				entities.push_back(entity);

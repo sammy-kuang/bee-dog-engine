@@ -40,21 +40,15 @@ int main(void)
 
 	// initialize resource caches
 	add_ctx(registry);
-	
+
 	// load level
 	if (FileExists(get_asset_path("save.json").c_str())) {
 		load_level(registry, "save.json");
 	}
 
-	/*for (int i = 0; i < 10; i++) {
-		create_sprite_entity(registry, "gura.png", i * 100.f, 200);
-	}*/
-
 	// add player
-	auto p = create_sprite_entity(registry, "gura.png");
+	auto p = create_sprite_entity(registry, "test.png");
 	registry.emplace<Player>(p);
-
-
 
 	rlImGuiSetup(true);
 

@@ -15,13 +15,6 @@ void ComponentEditorWidget<BDTransform>(entt::registry& reg, entt::registry::ent
 }
 
 template <>
-void ComponentEditorWidget<Name>(entt::registry& reg, entt::registry::entity_type e)
-{
-	auto& t = reg.get<Name>(e);
-	ImGui::InputText("Name", &t.name);
-}
-
-template <>
 void ComponentEditorWidget<Sprite>(entt::registry& reg, entt::registry::entity_type e)
 {
 	auto& t = reg.get<Sprite>(e);
@@ -46,14 +39,18 @@ void ComponentEditorWidget<BoxArea>(entt::registry& reg, entt::registry::entity_
 	if (ImGui::Button("Rebase on Sprite")) t.rebase_on_sprite(reg, e);
 }
 
+template <>
+void ComponentEditorWidget<AlwaysRender>(entt::registry& reg, entt::registry::entity_type e)
+{
+}
 
 
 void register_components(ComponentRegistrar<entt::entity>& cr) {
-	cr.registerComponent<Name>("Name");
 	cr.registerComponent<BDTransform>("Transform");
 	cr.registerComponent<Sprite>("Sprite");
 	cr.registerComponent<BoxCollider>("Box Collider");
 	cr.registerComponent<BoxArea>("Box Area");
+	cr.registerComponent<AlwaysRender>("Always Render");
 }
 
 ComponentRegistrar<entt::entity>& add_registrar(entt::registry& reg) {

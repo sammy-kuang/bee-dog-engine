@@ -1,37 +1,51 @@
 {
-    "value0": 3,
-    "value1": 4294967295,
+    "value0": 5,
+    "value1": 4293918721,
     "value2": 0,
-    "value3": 1,
+    "value3": 2097151,
     "value4": 2,
-    "value5": 0,
-    "value6": {
+    "value5": 3,
+    "value6": 3,
+    "value7": 0,
+    "value8": {
         "value0": 361.0,
         "value1": 240.0,
         "value2": 0.0,
         "value3": 45.0,
         "value4": 1.0
     },
-    "value7": 1,
-    "value8": {
-        "value0": -256.0,
-        "value1": -221.0,
+    "value9": 3,
+    "value10": {
+        "value0": -184.0,
+        "value1": -274.0,
         "value2": 0.0,
         "value3": 0.0,
         "value4": 1.0
     },
-    "value9": 2,
-    "value10": 0,
-    "value11": {
-        "value0": "gura.png"
+    "value11": 2,
+    "value12": {
+        "value0": 260.0,
+        "value1": -184.0,
+        "value2": 0.0,
+        "value3": 0.0,
+        "value4": 1.0
     },
-    "value12": 1,
-    "value13": {
-        "value0": "senko.png"
+    "value13": 3,
+    "value14": 0,
+    "value15": {
+        "value0": "test.png"
     },
-    "value14": 2,
-    "value15": 0,
-    "value16": {
+    "value16": 3,
+    "value17": {
+        "value0": "test_2.png"
+    },
+    "value18": 2,
+    "value19": {
+        "value0": "test.png"
+    },
+    "value20": 3,
+    "value21": 0,
+    "value22": {
         "value0": {
             "value0": 311.0,
             "value1": 190.0,
@@ -39,18 +53,27 @@
             "value3": 100.0
         }
     },
-    "value17": 1,
-    "value18": {
+    "value23": 3,
+    "value24": {
         "value0": {
-            "value0": -356.0,
-            "value1": -277.5,
+            "value0": -284.0,
+            "value1": -324.0,
             "value2": 200.0,
-            "value3": 113.0
+            "value3": 100.0
         }
     },
-    "value19": 2,
-    "value20": 0,
-    "value21": {
+    "value25": 2,
+    "value26": {
+        "value0": {
+            "value0": 210.0,
+            "value1": -234.0,
+            "value2": 100.0,
+            "value3": 100.0
+        }
+    },
+    "value27": 3,
+    "value28": 0,
+    "value29": {
         "value0": {
             "value0": 307.0,
             "value1": 186.0,
@@ -58,38 +81,58 @@
             "value3": 100.0
         }
     },
-    "value22": 1,
-    "value23": {
+    "value30": 3,
+    "value31": {
         "value0": {
-            "value0": -360.0,
-            "value1": -281.5,
+            "value0": -288.0,
+            "value1": -328.0,
             "value2": 200.0,
-            "value3": 113.0
+            "value3": 100.0
         }
     },
-    "value24": 2,
-    "value25": 0,
-    "value26": {
+    "value32": 2,
+    "value33": {
+        "value0": {
+            "value0": 206.0,
+            "value1": -238.0,
+            "value2": 100.0,
+            "value3": 100.0
+        }
+    },
+    "value34": 3,
+    "value35": 0,
+    "value36": {
         "value0": 0.0,
         "value1": 0.0,
         "value2": false,
         "value3": false
     },
-    "value27": 1,
-    "value28": {
+    "value37": 3,
+    "value38": {
         "value0": 0.0,
         "value1": 0.0,
         "value2": false,
         "value3": false
     },
-    "value29": 0,
-    "value30": 2,
-    "value31": 0,
-    "value32": {
+    "value39": 2,
+    "value40": {
+        "value0": 0.0,
+        "value1": 0.0,
+        "value2": false,
+        "value3": false
+    },
+    "value41": 0,
+    "value42": 3,
+    "value43": 0,
+    "value44": {
         "value0": "Dog"
     },
-    "value33": 1,
-    "value34": {
-        "value0": "Senko"
+    "value45": 3,
+    "value46": {
+        "value0": "5"
+    },
+    "value47": 2,
+    "value48": {
+        "value0": "4"
     }
 }

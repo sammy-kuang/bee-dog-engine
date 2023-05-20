@@ -17,6 +17,13 @@ void close_loader(Editor& editor) {
 	editor.current_callback = nullptr;
 }
 
+void open_loader(Editor& editor, LoaderCallback callback, const char* title, const char* button) {
+	editor.current_callback = callback;
+	editor.loader_button_title = button;
+	editor.loader_title = title;
+	editor.loader_open = true;
+}
+
 void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 	// get all entities
 	auto entities = registry.view<Name>();
@@ -27,25 +34,26 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("New")) {
+				open_loader(editor, empty, "New", "Save new level as...");
+			}
+
 			if (ImGui::MenuItem("Save")) {
 				if (editor.current_file.empty()) {
-					editor.current_callback = save;
-					editor.loader_button_title = "Save";
-					editor.loader_title = "Save level as...";
-					editor.loader_open = true;
+					open_loader(editor, save, "New", "Save level as...");
 				}
 				else
 					save(registry, editor, editor.current_file);
 			}
 
 			if (ImGui::MenuItem("Load")) {
-				if (!editor.current_file.empty())
-					save(registry, editor, editor.current_file);
+				// We should add some verfication prompt
+				// instead of saving for them
 
-				editor.current_callback = load;
-				editor.loader_button_title = "Load";
-				editor.loader_title = "Load";
-				editor.loader_open = true;
+				/*if (!editor.current_file.empty())
+					save(registry, editor, editor.current_file);*/
+
+				open_loader(editor, load, "Load", "Load...");
 			}
 			ImGui::EndMenu();
 		}
@@ -56,8 +64,6 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 
 	for (auto& entity : entities) {
 		auto& name = registry.get<Name>(entity);
-		//auto& transform = registry.get<BDTransform>(entity);
-
 		bool selected = editor.current_entity == entity;
 
 		if (ImGui::Selectable(name.name.c_str(), &selected)) {
@@ -69,7 +75,8 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 	ImGui::ListBoxFooter();
 
 	if (ImGui::Button("Create Entity")) {
-		create_sprite_entity(registry, "gura.png");
+		auto e = create_sprite_entity(registry, "test.png");
+		editor.current_entity = e;
 	}
 	if (ImGui::Button("Clear")) {
 		registry.clear();
@@ -84,7 +91,7 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 	ImGui::End();
 
 	if (editor.loader_open) {
-		ImGui::SetNextWindowPos(ImVec2(GetScreenWidth() / 2, GetScreenHeight() / 2));
+		ImGui::SetNextWindowPos(ImVec2((float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 2.f));
 		ImGui::Begin(editor.loader_title, NULL);
 
 		if (ImGui::InputText("", &editor.hold_cache, ImGuiInputTextFlags_EnterReturnsTrue) ||

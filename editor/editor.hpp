@@ -25,20 +25,27 @@ struct Editor {
 	LoaderCallback current_callback;
 };
 
-void load(entt::registry& registry, Editor& editor, std::string save_resource) {
-	registry.clear();
-	load_level(registry, save_resource);
+void set_current_file(Editor& editor, std::string save_resource) {
 	editor.current_file = save_resource;
 	auto s = std::string("bee dog editor - ") + save_resource;
 	SetWindowTitle(s.c_str());
+}
+
+void empty(entt::registry& registry, Editor& editor, std::string save_resource) {
+	registry.clear();
+	set_current_file(editor, save_resource);
+}
+
+void load(entt::registry& registry, Editor& editor, std::string save_resource) {
+	registry.clear();
+	load_level(registry, save_resource);
+	set_current_file(editor, save_resource);
 }
 
 void save(entt::registry& registry, Editor& editor, std::string save_resource) {
 	serialize_level(registry, save_resource);
-	editor.current_file = save_resource;
-	auto s = std::string("bee dog editor - ") + save_resource;
-	SetWindowTitle(s.c_str());
-
+	set_current_file(editor, save_resource);
 }
+
 
 #endif
