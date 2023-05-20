@@ -28,7 +28,7 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 	// get all entities
 	auto entities = registry.view<Name>();
 
-	ImGui::SetNextWindowSize(ImVec2(250, 900 / 2), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(WINDOW_WIDTH, 900 / 2), ImGuiCond_Once);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
 	ImGui::Begin("Scene", NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 

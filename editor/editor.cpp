@@ -3,31 +3,31 @@
 #include "inspector.hpp"
 #include "systems.hpp"
 #include "component_registrar.hpp"
-
+#include "editor_systems.hpp"
 #include <vector>
 
 using std::vector, std::string;
-
-
 
 int main(void)
 {
 	entt::registry registry;
 	vector<System> systems;
-	Editor editor;
 	const int screen_width = 1600;
 	const int screen_height = 900;
 
-	//create_temp_entitites(registry);
+	auto &editor = registry.ctx().emplace<Editor>();
 	add_ctx(registry);
 	add_move_systems(systems);
+	add_editor_systems(systems);
+
 	auto& cr = add_registrar(registry);
 
 	InitWindow(screen_width, screen_height, "bee dog editor");
 	SetTargetFPS(60);
 
+	auto &camera = add_camera(registry);
 	Vector2 camera_pos = Vector2{ -screen_width / 2, -screen_height / 2 };
-	Camera2D camera = { Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f };
+	camera.target = camera_pos;
 
 	rlImGuiSetup(true);
 
@@ -37,16 +37,15 @@ int main(void)
 		ClearBackground(RAYWHITE);
 		BeginMode2D(camera);
 
-		camera.target = camera_pos;
 		draw_sprites(registry);
 		debug_rendering(registry);
-
-		EndMode2D();
-		rlImGuiBegin();
 
 		for (auto& system : systems) {
 			system(registry);
 		}
+
+		EndMode2D();
+		rlImGuiBegin();
 
 		draw_scene_hierarchy(registry, editor);
 		draw_inspector(registry, editor, cr);

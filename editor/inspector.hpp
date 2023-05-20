@@ -11,7 +11,7 @@
 // For the license of the original code, check vendor/imgui/entt_imgui.hpp
 
 void draw_inspector(entt::registry& registry, Editor& editor, ComponentRegistrar<entt::entity> cr) {
-	ImGui::SetNextWindowSize(ImVec2(250, 900 / 2), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(WINDOW_WIDTH, 900 / 2), ImGuiCond_Once);
 	ImGui::SetNextWindowPos(ImVec2(0, 900 / 2), ImGuiCond_Once);
 	ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 

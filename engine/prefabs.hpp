@@ -24,8 +24,9 @@ entt::entity create_sprite_entity(entt::registry &registry, const char* resource
 }
 
 // Create and add the camera to the registry's context
-void add_camera(entt::registry &registry) {
+Camera2D& add_camera(entt::registry &registry) {
     registry.ctx().emplace<Camera2D>(Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f);
+    return registry.ctx().get<Camera2D>();
 }
 
 

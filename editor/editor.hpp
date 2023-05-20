@@ -11,6 +11,7 @@
 #define EDITOR_HPP
 
 struct Editor;
+const int WINDOW_WIDTH = 250;
 
 typedef void (*LoaderCallback) (entt::registry&, Editor&, std::string);
 
@@ -23,6 +24,9 @@ struct Editor {
 	const char* loader_title = "";
 	const char* loader_button_title = "";
 	LoaderCallback current_callback;
+
+	bool right_arrow_grab = false;
+	bool up_arrow_grab = false;
 };
 
 void set_current_file(Editor& editor, std::string save_resource) {
