@@ -57,10 +57,17 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("View")) {
+			if (ImGui::MenuItem("Recenter Camera")) {
+				center_camera(registry.ctx().get<Camera2D>());
+			}
+
+			ImGui::EndMenu();
+		}
 
 		ImGui::EndMenuBar();
 	}
-	ImGui::ListBoxHeader("", ImVec2(ImGui::GetWindowWidth() - 20, ImGui::GetWindowHeight() / 2));
+	ImGui::ListBoxHeader("##", ImVec2(ImGui::GetWindowWidth() - 20, ImGui::GetWindowHeight() / 2));
 
 	for (auto& entity : entities) {
 		auto& name = registry.get<Name>(entity);
@@ -78,6 +85,7 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 		auto e = create_sprite_entity(registry, "test.png");
 		editor.current_entity = e;
 	}
+
 	if (ImGui::Button("Clear")) {
 		registry.clear();
 		editor.current_entity = entt::null;
@@ -88,13 +96,18 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 		editor.current_entity = entt::null;
 	}
 
+	if (registry.valid(editor.current_entity) && ImGui::Button("Deselect")) {
+		editor.current_entity = entt::null;
+	}
+
 	ImGui::End();
 
 	if (editor.loader_open) {
-		ImGui::SetNextWindowPos(ImVec2((float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 2.f));
+		ImGui::SetNextWindowPos(ImVec2((float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 2.f), ImGuiCond_Once);
+		ImGui::SetNextWindowSize(ImVec2(150, 50), ImGuiCond_Once);
 		ImGui::Begin(editor.loader_title, NULL);
 
-		if (ImGui::InputText("", &editor.hold_cache, ImGuiInputTextFlags_EnterReturnsTrue) ||
+		if (ImGui::InputText("##", &editor.hold_cache, ImGuiInputTextFlags_EnterReturnsTrue) ||
 			ImGui::Button(editor.loader_button_title)) {
 			editor.current_callback(registry, editor, editor.hold_cache);
 			close_loader(editor);
@@ -105,6 +118,8 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 		if (ImGui::Button("Close")) {
 			close_loader(editor);
 		}
+
+		ImGui::End();
 	}
 }
 #endif

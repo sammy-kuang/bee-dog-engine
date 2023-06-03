@@ -10,11 +10,10 @@ void camera_movement(entt::registry& registry) {
 	auto &cam = registry.ctx().get<Camera2D>();
 
 	// translate based on right click
-	if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
+	if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE))
 	{
 		Vector2 delta = GetMouseDelta();
 		delta = Vector2Scale(delta, -1.0f / cam.zoom);
-
 		cam.target = Vector2Add(cam.target, delta);
 	}
 
@@ -100,6 +99,10 @@ void editor_entity_controls(entt::registry& registry) {
 				editor.current_entity = entity;
 			}
 		}
+	}
+
+	if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+		editor.current_entity = entt::null;
 	}
 }
 
