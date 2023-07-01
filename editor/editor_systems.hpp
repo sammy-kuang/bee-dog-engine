@@ -32,8 +32,8 @@ void camera_movement(entt::registry& registry) {
 
 		// zoom
 		cam.zoom += wheel * 0.125f;
-		if (cam.zoom < 0.125f)
-			cam.zoom = 0.125f;
+		if (cam.zoom < 0.25f)
+			cam.zoom = 0.25f;
 	}
 }
 

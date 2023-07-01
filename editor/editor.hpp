@@ -52,17 +52,7 @@ void save(entt::registry& registry, Editor& editor, std::string save_resource) {
 }
 
 void center_camera(Camera2D& cam) {
-
-	// get the world point that is under the mouse
-	Vector2 mouseWorldPos = Vector2{-1600 / 2, - 900 / 2};
-
-	// set the offset to where the mouse is
-	cam.offset = GetWorldToScreen2D(mouseWorldPos, cam);
-
-	// set the target to match, so that the camera maps the world space point under the cursor to the screen space point under the cursor at any zoom
-	cam.target = mouseWorldPos;
-
-	std::cout << "Invoked center camera\n";
-
+	cam.offset = Vector2{1600/2,900/2};
+	cam.target = Vector2{0,0};
 }
 #endif

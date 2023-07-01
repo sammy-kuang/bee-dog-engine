@@ -33,7 +33,7 @@ int main(void)
 
 	// append systems
 	add_core_systems(systems);
-	systems.push_back(debug_rendering);
+	// systems.push_back(debug_rendering);
 
 	// create the camera
 	add_camera(registry);
