@@ -10,16 +10,7 @@
 // i don't really like how entt handles resource handles
 // so im going to deploy my own, which is probably less efficient
 
-std::string get_asset_path(std::string resource_name) {
-	if (DirectoryExists("assets/"))
-		return "assets/" + resource_name;
-	else if (DirectoryExists("../../../assets/")) // vs2022
-		return "../../../assets/" + resource_name;
-	else if (DirectoryExists("../assets/")) // vscode
-		return "../assets/"+resource_name;
-
-	return "!! FAILED TO FIND" + resource_name;
-}
+std::string get_asset_path(std::string resource_name) ;
 
 template<typename T>
 class ResourceCache {

@@ -2,6 +2,7 @@
 
 #include "raylib.h"
 #include "entt/entt.hpp"
+#include "engine.hpp"
 #include "components.hpp"
 #include "systems.hpp"
 #include "resources.hpp"

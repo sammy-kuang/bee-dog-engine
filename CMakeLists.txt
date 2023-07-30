@@ -15,17 +15,18 @@ FetchContent_MakeAvailable(raylib)
 
 # Adding our source files
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp") # Define PROJECT_SOURCES as a list of all source files
+file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/engine/*.cpp")
 set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/") # Define PROJECT_INCLUDE to be the path to the include directory of the project
 set(ENGINE "${CMAKE_CURRENT_LIST_DIR}/engine/")
 
 message("-- Added vendors")
 
-# Declare other projects
+# Declare other projects and all subdirectories
 file (GLOB_RECURSE VENDORS CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/vendor/*.cpp")
 
 # Declaring our executable
 add_executable(${PROJECT_NAME})
-target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES} ${VENDORS})
+target_sources(${PROJECT_NAME} PRIVATE ${ENGINE_SOURCES} ${PROJECT_SOURCES} ${VENDORS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${ENGINE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/vendor/)
@@ -37,13 +38,13 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_S
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 # Compile the editor
-file(GLOB_RECURSE editor_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/editor/*.cpp")
-add_executable(editor)
-target_sources(editor PRIVATE ${editor_sources} ${VENDORS})
-target_include_directories(editor PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/)
-target_include_directories(editor PRIVATE ${ENGINE})
-target_link_libraries(editor PRIVATE raylib)
+# file(GLOB_RECURSE editor_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/editor/*.cpp")
+# add_executable(editor)
+# target_sources(editor PRIVATE ${ENGINE_SOURCES} ${editor_sources} ${VENDORS})
+# target_include_directories(editor PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/)
+# target_include_directories(editor PRIVATE ${ENGINE})
+# target_link_libraries(editor PRIVATE raylib)
 
 # Setting ASSETS_PATH
-target_compile_definitions(editor PUBLIC ASSETS_PATH) # Set the asset path macro to the absolute path on the dev machine
-set_property(TARGET editor PROPERTY CXX_STANDARD 17)
+# target_compile_definitions(editor PUBLIC ASSETS_PATH) # Set the asset path macro to the absolute path on the dev machine
+# set_property(TARGET editor PROPERTY CXX_STANDARD 17)
