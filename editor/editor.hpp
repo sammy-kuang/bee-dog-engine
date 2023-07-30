@@ -41,6 +41,11 @@ void empty(entt::registry& registry, Editor& editor, std::string save_resource) 
 }
 
 void load(entt::registry& registry, Editor& editor, std::string save_resource) {
+	if (!FileExists(get_asset_path(save_resource).c_str())) {
+		std::cout << "Failed to find file: " << get_asset_path(save_resource) << ", continuing...\n";
+		return;
+	}
+
 	registry.clear();
 	load_level(registry, save_resource);
 	set_current_file(editor, save_resource);

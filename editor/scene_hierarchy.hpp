@@ -104,7 +104,7 @@ void draw_scene_hierarchy(entt::registry& registry, Editor& editor) {
 
 	if (editor.loader_open) {
 		ImGui::SetNextWindowPos(ImVec2((float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 2.f), ImGuiCond_Once);
-		ImGui::SetNextWindowSize(ImVec2(150, 50), ImGuiCond_Once);
+		ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
 		ImGui::Begin(editor.loader_title, NULL);
 
 		if (ImGui::InputText("##", &editor.hold_cache, ImGuiInputTextFlags_EnterReturnsTrue) ||

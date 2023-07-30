@@ -29,7 +29,7 @@ int main(void)
 	// initialize raylib
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
 	InitAudioDevice();
-	SetTargetFPS(60);
+	SetTargetFPS(120);
 
 	// append systems
 	add_core_systems(systems);

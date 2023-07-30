@@ -12,19 +12,20 @@
 #ifndef SYSTEMS_HPP
 #define SYSTEMS_HPP
 
-typedef void (*System)(entt::registry&);
+typedef void (*System)(entt::registry &);
 
 // all systems should follow the pattern
 // void system(entt::registry& register)
 
 // system to draw sprites given a transform
-void draw_sprites(entt::registry& registry)
+void draw_sprites(entt::registry &registry)
 {
 	auto view = registry.view<BDTransform, Sprite>(entt::exclude<Invisible>);
 
-	for (auto& entity : view) {
-		BDTransform& transform = registry.get<BDTransform>(entity);
-		Sprite& sprite = registry.get<Sprite>(entity);
+	for (auto &entity : view)
+	{
+		BDTransform &transform = registry.get<BDTransform>(entity);
+		Sprite &sprite = registry.get<Sprite>(entity);
 		auto texture = registry.ctx().get<TextureCache>().load_resource(sprite.path);
 
 		int width = (int)(texture.width * transform.scale);
@@ -34,7 +35,8 @@ void draw_sprites(entt::registry& registry)
 		// thanks jack
 		// https://github.com/j-ackyao
 
-		if (transform.rotation != 0) {
+		if (transform.rotation != 0)
+		{
 			float r = (float)sqrt(pow((width / 2.f), 2) + pow((height / 2.f), 2));
 			float x_0 = r * cos(PI / 4);
 			float y_0 = r * sin(PI / 4);
@@ -46,25 +48,24 @@ void draw_sprites(entt::registry& registry)
 			float x_f = -x_1 + x_0 + transform.x - width / 2;
 			float y_f = -y_1 + y_0 + transform.y - height / 2;
 
-			Vector2 draw_pos{ x_f, y_f };
+			Vector2 draw_pos{x_f, y_f};
 			DrawTextureEx(texture, draw_pos, transform.rotation, transform.scale, WHITE);
 		}
-		else {
-			Vector2 draw_pos{ transform.x - width / 2, transform.y - height / 2 };
+		else
+		{
+			Vector2 draw_pos{transform.x - width / 2, transform.y - height / 2};
 			DrawTextureEx(texture, draw_pos, transform.rotation, transform.scale, WHITE);
 		}
 	}
-
-
 }
 
 // system to apply velocity
-void apply_velocity(entt::registry& registry)
+void apply_velocity(entt::registry &registry)
 {
 	auto view = registry.view<BDTransform, Velocity>();
 
-	view.each([](BDTransform& transform, Velocity& velocity)
-		{
+	view.each([](BDTransform &transform, Velocity &velocity)
+			  {
 			auto frame_time = GetFrameTime();
 			float delta_x = velocity.x * frame_time;
 			float delta_y = velocity.y * frame_time;
@@ -76,21 +77,21 @@ void apply_velocity(entt::registry& registry)
 			velocity.y -= delta_y; });
 }
 
-void sort_sprites_by_z(entt::registry& registry)
+void sort_sprites_by_z(entt::registry &registry)
 {
-	registry.sort<BDTransform>([](const auto& l, const auto& r)
-		{ return l.z < r.z; });
+	registry.sort<BDTransform>([](const auto &l, const auto &r)
+							   { return l.z < r.z; });
 }
 
-void player_controller(entt::registry& registry)
+void player_controller(entt::registry &registry)
 {
 	auto view = registry.view<Player, Velocity, BDTransform>();
 	auto camera_view = registry.view<Camera2D>();
 
-	for (auto& player : view)
+	for (auto &player : view)
 	{
-		BDTransform& t = registry.get<BDTransform>(player);
-		Velocity& v = registry.get<Velocity>(player);
+		BDTransform &t = registry.get<BDTransform>(player);
+		Velocity &v = registry.get<Velocity>(player);
 		if (IsKeyDown(KEY_W))
 		{
 			v.y = -250;
@@ -126,19 +127,21 @@ void player_controller(entt::registry& registry)
 			t.rotation -= 5;
 		}
 
-		Camera2D& c = registry.ctx().get<Camera2D>();
+		Camera2D &c = registry.ctx().get<Camera2D>();
 		// update the camera
-		c.target = Vector2{ t.x - GetScreenWidth() / 2, t.y - GetScreenHeight() / 2 };
+		c.target = Vector2{t.x - GetScreenWidth() / 2, t.y - GetScreenHeight() / 2};
 	}
 }
 
 // move collision boxes to the transform position
-void move_box_collisions(entt::registry& registry) {
+void move_box_collisions(entt::registry &registry)
+{
 	auto view = registry.view<BDTransform, BoxCollider>();
 
-	for (auto& entity : view) {
-		BDTransform& tr = registry.get<BDTransform>(entity);
-		BoxCollider& bd = registry.get<BoxCollider>(entity);
+	for (auto &entity : view)
+	{
+		BDTransform &tr = registry.get<BDTransform>(entity);
+		BoxCollider &bd = registry.get<BoxCollider>(entity);
 
 		bd.move((int)tr.x, (int)tr.y);
 	}
@@ -146,7 +149,7 @@ void move_box_collisions(entt::registry& registry) {
 
 // system to handle box collisions for moving objects
 // thanks jack
-void handle_box_collisions(entt::registry& registry)
+void handle_box_collisions(entt::registry &registry)
 {
 	auto view = registry.view<BDTransform, Velocity, BoxCollider>();
 	auto coll = registry.view<BDTransform, BoxCollider>();
@@ -186,100 +189,112 @@ void handle_box_collisions(entt::registry& registry)
 
 			if (horizontal)
 			{
-				e_vel.cancel_x = (e_vel.x > 0 && o_tr.x > e_tr.x) || (e_vel.x < 0 && o_tr.x < e_tr.x);
+				bool left_of = (e_vel.x > 0 && o_tr.x > e_tr.x);
+				bool right_of = (e_vel.x < 0 && o_tr.x < e_tr.x);
+				e_vel.cancel_x = left_of || right_of;
+
+				if (left_of)
+					e_tr.x = o_tr.x - o_bc.box.width / 2 - e_bc.box.width / 2;
+				else if (right_of)
+					e_tr.x = o_tr.x + o_bc.box.width / 2  + e_bc.box.width / 2;
 			}
 			else
 			{
-				e_vel.cancel_y = (e_vel.y > 0 && o_tr.y > e_tr.y) || (e_vel.y < 0 && o_tr.y < e_tr.y);
+				bool above = (e_vel.y > 0 && o_tr.y > e_tr.y);
+				bool below = (e_vel.y < 0 && o_tr.y < e_tr.y);
+
+				e_vel.cancel_y = above || below;
+
+				if (above)
+					e_tr.y = o_tr.y - o_bc.box.height / 2 - o_bc.box.height / 2;
+				else if (below)
+					e_tr.y = o_tr.y + o_bc.box.height / 2 + o_bc.box.height / 2;
 			}
 		}
 	}
 }
 
 // move the box areas in a similar manner to box collisions
-void move_box_areas(entt::registry& registry) {
+void move_box_areas(entt::registry &registry)
+{
 	auto view = registry.view<BDTransform, BoxArea>();
 
-	for (auto& entity : view) {
-		BDTransform& t = registry.get<BDTransform>(entity);
-		BoxArea& b = registry.get<BoxArea>(entity);
+	for (auto &entity : view)
+	{
+		BDTransform &t = registry.get<BDTransform>(entity);
+		BoxArea &b = registry.get<BoxArea>(entity);
 		b.move((int)t.x, (int)t.y);
 	}
 }
 
 // system to draw the screen relative to the camera
 // there should only be one camera in the registry
-void camera_system(entt::registry& registry)
+void camera_system(entt::registry &registry)
 {
 	auto camera = registry.ctx().get<Camera2D>();
-	auto camera_box = Rectangle{ camera.target.x, camera.target.y, (float)GetScreenWidth(), (float)GetScreenHeight() };
+	Rectangle camera_box = Rectangle{camera.target.x, camera.target.y, (float)GetScreenWidth(), (float)GetScreenHeight()};
 	BeginMode2D(camera);
 	auto view = registry.view<BDTransform>(entt::exclude<AlwaysRender>);
 
-	for (auto& entity : view) {
-		BDTransform& transform = registry.get<BDTransform>(entity);
-		Rectangle comparison = Rectangle{ 0, 0, 0, 0 };
-		if (registry.try_get<Sprite>(entity) != nullptr) {
+	for (auto &entity : view)
+	{
+		BDTransform &transform = registry.get<BDTransform>(entity);
+		Rectangle comparison = Rectangle{0, 0, 0, 0};
+		if (registry.try_get<Sprite>(entity) != nullptr)
+		{
 			auto s = registry.get<Sprite>(entity);
 			auto texture = registry.ctx().get<TextureCache>().load_resource(s.path);
-			comparison = Rectangle{ transform.x - texture.width / 2.f, transform.y - texture.height / 2.f, (float)texture.width, (float)texture.height };
+			comparison = Rectangle{transform.x - texture.width / 2.f, transform.y - texture.height / 2.f, (float)texture.width, (float)texture.height};
 		}
-		else if (registry.try_get<BoxCollider>(entity) != nullptr) {
+		else if (registry.try_get<BoxCollider>(entity) != nullptr)
+		{
 			auto s = registry.get<BoxCollider>(entity).box;
-			comparison = Rectangle{ s.x, s.y, (float)s.width, (float)s.height };
+			comparison = Rectangle{s.x, s.y, (float)s.width, (float)s.height};
 		}
 
 		bool visible = registry.try_get<Invisible>(entity) == nullptr;
-		bool in_view = (comparison.width <= 0 || comparison.height <= 0) ? CheckCollisionPointRec(Vector2{ transform.x, transform.y }, camera_box) : CheckCollisionRecs(comparison, camera_box);
+		bool in_view = (comparison.width <= 0 || comparison.height <= 0) ? CheckCollisionPointRec(Vector2{transform.x, transform.y}, camera_box) : CheckCollisionRecs(comparison, camera_box);
 
 		if (!in_view && visible)
 			registry.emplace<Invisible>(entity);
 		else if (in_view && !visible)
 			registry.remove<Invisible>(entity);
-
 	}
 }
 
 // system to enable debug rendering (collisions primarily)
-void debug_rendering(entt::registry& registry)
+void debug_rendering(entt::registry &registry)
 {
 	auto collisions = registry.view<BoxCollider>(entt::exclude<Invisible>);
 	auto vel_box = registry.view<BoxCollider, Velocity, BDTransform>(entt::exclude<Invisible>);
 	auto areas = registry.view<BoxArea>(entt::exclude<Invisible>);
 
-	collisions.each([](BoxCollider& bd)
-		{
-			DrawRectangleLinesEx(bd.box, 1.f, RED);
+	collisions.each([](BoxCollider &bd)
+					{ DrawRectangleLinesEx(bd.box, 1.f, RED); });
 
-		});
+	vel_box.each([](BoxCollider &bd, Velocity &vel, BDTransform &tr)
+				 {
+					 auto nx = (int)(tr.x + vel.x * GetFrameTime());
+					 auto ny = (int)(tr.y + vel.y * GetFrameTime());
 
-	vel_box.each([](BoxCollider& bd, Velocity& vel, BDTransform& tr)
-		{
-			auto nx = (int)(tr.x + vel.x * GetFrameTime());
-			auto ny = (int)(tr.y + vel.y * GetFrameTime());
+					 auto h = bd.create_x_box(nx, ny);
+					 auto v = bd.create_y_box(nx, ny);
 
-			auto h = bd.create_x_box(nx, ny);
-			auto v = bd.create_y_box(nx, ny);
+					 DrawRectangleLinesEx(h, 1.f, GREEN);
+					 DrawRectangleLinesEx(v, 1.f, BLUE); });
 
-			DrawRectangleLinesEx(h, 1.f, GREEN);
-			DrawRectangleLinesEx(v, 1.f, BLUE);
-
-		});
-
-	areas.each([](BoxArea& ba) {
-		DrawRectangleRec(ba.create_area_rectangle(), Color{ 102, 191, 255, 125 });
-		});
-
+	areas.each([](BoxArea &ba)
+			   { DrawRectangleRec(ba.create_area_rectangle(), Color{102, 191, 255, 125}); });
 }
 
-
-void add_move_systems(std::vector<System>& systems) {
+void add_move_systems(std::vector<System> &systems)
+{
 	systems.push_back(move_box_collisions);
 	systems.push_back(move_box_areas);
 }
 
 // add "core" systems, such as sprite rendering, collision, velocity
-void add_core_systems(std::vector<System>& systems)
+void add_core_systems(std::vector<System> &systems)
 {
 	add_move_systems(systems);
 	systems.push_back(camera_system);
