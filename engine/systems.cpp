@@ -1,6 +1,7 @@
 #include "systems.hpp"
 #include "components.hpp"
 #include "resources.hpp"
+#include "spatial_hash.hpp"
 #include "engine.hpp"
 #include <vector>
 #include <iostream>
@@ -129,21 +130,28 @@ void move_box_collisions(entt::registry &registry)
 	{
 		BDTransform &tr = registry.get<BDTransform>(entity);
 		BoxCollider &bd = registry.get<BoxCollider>(entity);
-
+		int bx = bd.box.x;
+		int by = bd.box.y;
 		bd.move((int)tr.x, (int)tr.y);
+
+		if ((bx != bd.box.x || by != bd.box.y) && pos_to_tuple(bx, by) != pos_to_tuple(bd.box.x, bd.box.y)) {
+			remove_from_spatial_map(registry, entity, pos_to_tuple(bx, by));
+			add_to_spatial_map(registry, entity, pos_to_tuple(bd.box.x, bd.box.y));
+		}
 	}
 }
 
 void handle_box_collisions(entt::registry &registry)
 {
 	auto view = registry.view<BDTransform, Velocity, BoxCollider>();
-	auto coll = registry.view<BDTransform, BoxCollider>();
 
-	for (auto& entity : view)
+	for (auto &entity : view)
 	{
-		BDTransform& e_tr = registry.get<BDTransform>(entity);
-		Velocity& e_vel = registry.get<Velocity>(entity);
-		BoxCollider& e_bc = registry.get<BoxCollider>(entity);
+		BDTransform &e_tr = registry.get<BDTransform>(entity);
+		Velocity &e_vel = registry.get<Velocity>(entity);
+		BoxCollider &e_bc = registry.get<BoxCollider>(entity);
+
+		if (e_vel.x == 0 && e_vel.y == 0) continue;
 
 		auto nx = (int)(e_tr.x + e_vel.x * GetFrameTime());
 		auto ny = (int)(e_tr.y + e_vel.y * GetFrameTime());
@@ -154,15 +162,17 @@ void handle_box_collisions(entt::registry &registry)
 		e_vel.cancel_x = false;
 		e_vel.cancel_y = false;
 
-		for (auto& other : coll)
+		auto coll = get_surrounding_maps(registry, pos_to_tuple(e_bc.box.x, e_bc.box.y));
+
+		for (auto &other : coll)
 		{
 			if (entity == other || (e_vel.cancel_x && e_vel.cancel_y)) // we can't collide with ourselves
 				continue;
 
 			// check if entity is colliding with other
 			// if so, cancel current velocity
-			BDTransform& o_tr = registry.get<BDTransform>(other);
-			BoxCollider& o_bc = registry.get<BoxCollider>(other);
+			BDTransform &o_tr = registry.get<BDTransform>(other);
+			BoxCollider &o_bc = registry.get<BoxCollider>(other);
 
 			bool horizontal = CheckCollisionRecs(h, o_bc.box);
 			bool vertical = CheckCollisionRecs(v, o_bc.box);
@@ -181,7 +191,7 @@ void handle_box_collisions(entt::registry &registry)
 				if (left_of)
 					e_tr.x = o_tr.x - o_bc.box.width / 2 - e_bc.box.width / 2;
 				else if (right_of)
-					e_tr.x = o_tr.x + o_bc.box.width / 2  + e_bc.box.width / 2;
+					e_tr.x = o_tr.x + o_bc.box.width / 2 + e_bc.box.width / 2;
 			}
 			else
 			{

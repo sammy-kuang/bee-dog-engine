@@ -26,6 +26,7 @@ struct BDTransform
 	}
 };
 
+
 struct Sprite
 {
 	std::string path{};
@@ -69,6 +70,7 @@ static int COLLISION_THRESHOLD = 5;
 struct BoxCollider
 {
 	Rectangle box;
+	bool spatially_initialized = false;
 
 	void move(int x, int y);
 
@@ -80,7 +82,7 @@ struct BoxCollider
 
 	template <class Archive>
 	void serialize(Archive &archive) {
-		archive(box);
+		archive(box, false);
 	}
 };
 

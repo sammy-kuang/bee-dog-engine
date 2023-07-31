@@ -11,6 +11,7 @@
 #include <iostream>
 #include "imgui/imgui.h"
 #include "imgui/rlImGui.h"
+#include "spatial_hash.hpp"
 
 using std::vector;
 
@@ -42,14 +43,22 @@ int main(void)
 	// initialize resource caches
 	add_ctx(registry);
 
+	registry.on_construct<BoxCollider>().connect<&update_global_spatial_maps>(registry);
+
 	// load level
-	if (FileExists(get_asset_path("save.json").c_str())) {
-		load_level(registry, "save.json");
+	// if (FileExists(get_asset_path("save.json").c_str())) {
+	// 	load_level(registry, "save.json");
+	// }
+
+	// it is soooo fast....
+	for (int i = 0; i < 1000; i++) {
+		create_sprite_entity(registry, "test.png", i*100, -200);
 	}
 
 	// add player
 	auto p = create_sprite_entity(registry, "test.png");
 	registry.emplace<Player>(p);
+
 
 	rlImGuiSetup(true);
 
@@ -59,12 +68,12 @@ int main(void)
 		ClearBackground(RAYWHITE);
 		rlImGuiBegin();
 
-		for (auto& system : systems)
+		for (auto &system : systems)
 		{
 			system(registry);
 		}
 
-		for (auto& ui_system : ui_systems)
+		for (auto &ui_system : ui_systems)
 		{
 			ui_system(registry);
 		}

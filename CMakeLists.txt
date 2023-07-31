@@ -38,13 +38,13 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_S
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 # Compile the editor
-# file(GLOB_RECURSE editor_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/editor/*.cpp")
-# add_executable(editor)
-# target_sources(editor PRIVATE ${ENGINE_SOURCES} ${editor_sources} ${VENDORS})
-# target_include_directories(editor PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/)
-# target_include_directories(editor PRIVATE ${ENGINE})
-# target_link_libraries(editor PRIVATE raylib)
+file(GLOB_RECURSE editor_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/editor/*.cpp")
+add_executable(editor)
+target_sources(editor PRIVATE ${ENGINE_SOURCES} ${editor_sources} ${VENDORS})
+target_include_directories(editor PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/)
+target_include_directories(editor PRIVATE ${ENGINE})
+target_link_libraries(editor PRIVATE raylib)
 
-# Setting ASSETS_PATH
-# target_compile_definitions(editor PUBLIC ASSETS_PATH) # Set the asset path macro to the absolute path on the dev machine
-# set_property(TARGET editor PROPERTY CXX_STANDARD 17)
+# # Setting ASSETS_PATH
+target_compile_definitions(editor PUBLIC ASSETS_PATH) # Set the asset path macro to the absolute path on the dev machine
+set_property(TARGET editor PROPERTY CXX_STANDARD 17)

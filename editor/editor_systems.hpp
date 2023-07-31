@@ -2,6 +2,7 @@
 #include "editor.hpp"
 #include <iostream>
 #include <vector>
+#include "raymath.h"
 
 // Directly taken from:
 // https://github.com/raylib-extras/examples-c/blob/main/mouse_zoom/mouse_zoom.c

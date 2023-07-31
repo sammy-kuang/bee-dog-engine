@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "raylib.h"
+#include "entt/entt.hpp"
 
 
 #ifndef RESOURCES_HPP
@@ -35,6 +36,7 @@ public:
 		return LoadTexture(get_asset_path(resource_name).c_str());
 	}
 };
+
 
 
 #endif

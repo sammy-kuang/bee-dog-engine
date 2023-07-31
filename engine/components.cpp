@@ -1,9 +1,12 @@
 #include "components.hpp"
+#include "spatial_hash.hpp"
 
 void BoxCollider::move(int x, int y)
 {
-    box.x = x - box.width / 2;
-    box.y = y - box.height / 2;
+    auto nx = x - box.width / 2;
+    auto ny = y - box.height / 2;
+    box.x = nx;
+    box.y = ny;
 }
 
 void BoxCollider::rebase_on_sprite(entt::registry &registry, entt::entity entity)

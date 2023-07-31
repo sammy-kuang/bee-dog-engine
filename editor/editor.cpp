@@ -4,6 +4,7 @@
 #include "systems.hpp"
 #include "component_registrar.hpp"
 #include "editor_systems.hpp"
+#include "engine.hpp"
 #include <vector>
 
 using std::vector, std::string;
