@@ -30,13 +30,14 @@ struct BDTransform
 struct Sprite
 {
 	std::string path{};
+	Texture2D *handle = nullptr;
 
 	friend class cereal::access;
 
 	template <class Archive>
 	void serialize(Archive &archive)
 	{
-		archive(path);
+		archive(path, nullptr);
 	}
 };
 

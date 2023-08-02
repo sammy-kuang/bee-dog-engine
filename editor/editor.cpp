@@ -31,6 +31,7 @@ int main(void)
 	camera.target = camera_pos;
 
 	rlImGuiSetup(true);
+	SetExitKey(0);
 
 	while (!WindowShouldClose())
 	{

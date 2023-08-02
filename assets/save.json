@@ -1,140 +1,99 @@
 {
-    "value0": 4,
+    "value0": 3,
     "value1": 4294967295,
     "value2": 0,
     "value3": 1,
     "value4": 2,
-    "value5": 3,
-    "value6": 0,
-    "value7": {
-        "value0": 424.0,
-        "value1": -163.0,
+    "value5": 0,
+    "value6": {
+        "value0": 314.0,
+        "value1": -185.0,
         "value2": 0.0,
         "value3": 0.0,
         "value4": 1.0
     },
-    "value8": 1,
-    "value9": {
-        "value0": 478.0,
-        "value1": 113.0,
+    "value7": 1,
+    "value8": {
+        "value0": 454.0,
+        "value1": 2.0,
         "value2": 0.0,
         "value3": 0.0,
         "value4": 1.0
     },
-    "value10": 2,
+    "value9": 2,
+    "value10": 0,
     "value11": {
-        "value0": 45.0,
-        "value1": 361.0,
-        "value2": 0.0,
-        "value3": 0.0,
-        "value4": 1.0
+        "value0": "test.png",
+        "value1": null
     },
-    "value12": 3,
-    "value13": 0,
-    "value14": {
-        "value0": "test.png"
+    "value12": 1,
+    "value13": {
+        "value0": "test.png",
+        "value1": null
     },
-    "value15": 1,
+    "value14": 2,
+    "value15": 0,
     "value16": {
-        "value0": "test.png"
-    },
-    "value17": 2,
-    "value18": {
-        "value0": "test.png"
-    },
-    "value19": 3,
-    "value20": 0,
-    "value21": {
         "value0": {
-            "value0": 374.0,
-            "value1": -213.0,
+            "value0": 264.0,
+            "value1": -235.0,
             "value2": 100.0,
             "value3": 100.0
         },
         "value1": false
+    },
+    "value17": 1,
+    "value18": {
+        "value0": {
+            "value0": 404.0,
+            "value1": -48.0,
+            "value2": 100.0,
+            "value3": 100.0
+        },
+        "value1": false
+    },
+    "value19": 2,
+    "value20": 0,
+    "value21": {
+        "value0": {
+            "value0": 260.0,
+            "value1": -239.0,
+            "value2": 100.0,
+            "value3": 100.0
+        }
     },
     "value22": 1,
     "value23": {
         "value0": {
-            "value0": 428.0,
-            "value1": 63.0,
+            "value0": 400.0,
+            "value1": -52.0,
             "value2": 100.0,
             "value3": 100.0
-        },
-        "value1": false
+        }
     },
     "value24": 2,
-    "value25": {
-        "value0": {
-            "value0": -5.0,
-            "value1": 311.0,
-            "value2": 100.0,
-            "value3": 100.0
-        },
-        "value1": false
+    "value25": 0,
+    "value26": {
+        "value0": 0.0,
+        "value1": 0.0,
+        "value2": false,
+        "value3": false
     },
-    "value26": 3,
-    "value27": 0,
+    "value27": 1,
     "value28": {
-        "value0": {
-            "value0": 370.0,
-            "value1": -217.0,
-            "value2": 100.0,
-            "value3": 100.0
-        }
+        "value0": 0.0,
+        "value1": 0.0,
+        "value2": false,
+        "value3": false
     },
-    "value29": 1,
-    "value30": {
-        "value0": {
-            "value0": 424.0,
-            "value1": 59.0,
-            "value2": 100.0,
-            "value3": 100.0
-        }
-    },
-    "value31": 2,
+    "value29": 0,
+    "value30": 2,
+    "value31": 0,
     "value32": {
-        "value0": {
-            "value0": -9.0,
-            "value1": 307.0,
-            "value2": 100.0,
-            "value3": 100.0
-        }
-    },
-    "value33": 3,
-    "value34": 0,
-    "value35": {
-        "value0": 0.0,
-        "value1": 0.0,
-        "value2": false,
-        "value3": false
-    },
-    "value36": 1,
-    "value37": {
-        "value0": 0.0,
-        "value1": 0.0,
-        "value2": false,
-        "value3": false
-    },
-    "value38": 2,
-    "value39": {
-        "value0": 0.0,
-        "value1": 0.0,
-        "value2": false,
-        "value3": false
-    },
-    "value40": 0,
-    "value41": 3,
-    "value42": 0,
-    "value43": {
         "value0": "2"
     },
-    "value44": 1,
-    "value45": {
+    "value33": 1,
+    "value34": {
         "value0": "3"
-    },
-    "value46": 2,
-    "value47": {
-        "value0": "4"
     }
 }

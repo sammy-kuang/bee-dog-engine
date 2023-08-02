@@ -31,7 +31,7 @@ int main(void)
 	// initialize raylib
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
 	InitAudioDevice();
-	SetTargetFPS(120);
+	SetTargetFPS(240);
 
 	// append systems
 	add_core_systems(systems);
@@ -43,17 +43,19 @@ int main(void)
 	// initialize resource caches
 	add_ctx(registry);
 
-	registry.on_construct<BoxCollider>().connect<&update_global_spatial_maps>(registry);
+	// registry.on_construct<BoxCollider>().connect<&update_global_spatial_maps>(registry);
 
 	// load level
-	// if (FileExists(get_asset_path("save.json").c_str())) {
-	// 	load_level(registry, "save.json");
+	if (FileExists(get_asset_path("save.json").c_str())) {
+		load_level(registry, "save.json");
+	}
+
+	// it is not soooo fast....
+	// for (int i = 0; i < 5000; i++) {
+	// 	create_sprite_entity(registry, "test.png", i*100, 200);
 	// }
 
-	// it is soooo fast....
-	for (int i = 0; i < 1000; i++) {
-		create_sprite_entity(registry, "test.png", i*100, -200);
-	}
+	update_global_spatial_maps(registry);
 
 	// add player
 	auto p = create_sprite_entity(registry, "test.png");
