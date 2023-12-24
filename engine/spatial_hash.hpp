@@ -4,7 +4,7 @@
 #include <vector>
 #include "components.hpp"
 
-const int SPATIAL_HASH_SIZE = 1000;
+const int SPATIAL_HASH_SIZE = 100;
 
 // https://www.geeksforgeeks.org/how-to-create-an-unordered_map-of-tuples-in-c/
 // A hashing function involving a simple XOR

@@ -16,8 +16,8 @@ void BoxCollider::rebase_on_sprite(entt::registry &registry, entt::entity entity
     if (sprite != nullptr)
     {
         auto tex = registry.ctx().get<TextureCache>().load_resource(sprite->path);
-        box.width = (float)tex.width;
-        box.height = (float)tex.height;
+        box.width = (float)tex->width;
+        box.height = (float)tex->height;
     }
 }
 
@@ -49,8 +49,8 @@ void BoxArea::rebase_on_sprite(entt::registry &registry, entt::entity entity)
     if (sprite != nullptr)
     {
         auto tex = registry.ctx().get<TextureCache>().load_resource(sprite->path);
-        box.width = (float)tex.width;
-        box.height = (float)tex.height;
+        box.width = (float)tex->width;
+        box.height = (float)tex->height;
     }
 }
 

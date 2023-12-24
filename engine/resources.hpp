@@ -20,11 +20,11 @@ public:
 		return T();
 	}
 
-	T load_resource(std::string resource_name) {
+	T* load_resource(std::string resource_name) {
 		if (cache.find(resource_name) == cache.end()) {
 			cache[resource_name] = fetch_resource_from_rl(resource_name);
 		}
-		return cache[resource_name];
+		return &cache[resource_name];
 	}
 private:
 	std::map<std::string, T> cache;

@@ -16,10 +16,12 @@ void draw_sprites(entt::registry &registry)
 	{
 		BDTransform &transform = registry.get<BDTransform>(entity);
 		Sprite &sprite = registry.get<Sprite>(entity);
-		auto texture = registry.ctx().get<TextureCache>().load_resource(sprite.path);
 
-		int width = (int)(texture.width * transform.scale);
-		int height = (int)(texture.height * transform.scale);
+		if (sprite.handle == nullptr)
+			sprite.handle = registry.ctx().get<TextureCache>().load_resource(sprite.path);
+
+		int width = (int)(sprite.handle->width * transform.scale);
+		int height = (int)(sprite.handle->height * transform.scale);
 
 		// rotation calculations
 		// thanks jack
@@ -39,12 +41,12 @@ void draw_sprites(entt::registry &registry)
 			float y_f = -y_1 + y_0 + transform.y - height / 2;
 
 			Vector2 draw_pos{x_f, y_f};
-			DrawTextureEx(texture, draw_pos, transform.rotation, transform.scale, WHITE);
+			DrawTextureEx(*sprite.handle, draw_pos, transform.rotation, transform.scale, WHITE);
 		}
 		else
 		{
 			Vector2 draw_pos{transform.x - width / 2, transform.y - height / 2};
-			DrawTextureEx(texture, draw_pos, transform.rotation, transform.scale, WHITE);
+			DrawTextureEx(*sprite.handle, draw_pos, transform.rotation, transform.scale, WHITE);
 		}
 	}
 }
@@ -79,15 +81,16 @@ void player_controller(entt::registry &registry)
 
 	for (auto &player : view)
 	{
+		int speed = 250;
 		BDTransform &t = registry.get<BDTransform>(player);
 		Velocity &v = registry.get<Velocity>(player);
 		if (IsKeyDown(KEY_W))
 		{
-			v.y = -250;
+			v.y = -speed;
 		}
 		else if (IsKeyDown(KEY_S))
 		{
-			v.y = 250;
+			v.y = speed;
 		}
 		else
 		{
@@ -96,11 +99,11 @@ void player_controller(entt::registry &registry)
 
 		if (IsKeyDown(KEY_A))
 		{
-			v.x = -250;
+			v.x = -speed;
 		}
 		else if (IsKeyDown(KEY_D))
 		{
-			v.x = 250;
+			v.x = speed;
 		}
 		else
 		{
@@ -134,7 +137,8 @@ void move_box_collisions(entt::registry &registry)
 		int by = bd.box.y;
 		bd.move((int)tr.x, (int)tr.y);
 
-		if ((bx != bd.box.x || by != bd.box.y) && pos_to_tuple(bx, by) != pos_to_tuple(bd.box.x, bd.box.y)) {
+		if ((bx != bd.box.x || by != bd.box.y) && pos_to_tuple(bx, by) != pos_to_tuple(bd.box.x, bd.box.y))
+		{
 			remove_from_spatial_map(registry, entity, pos_to_tuple(bx, by));
 			add_to_spatial_map(registry, entity, pos_to_tuple(bd.box.x, bd.box.y));
 		}
@@ -151,7 +155,8 @@ void handle_box_collisions(entt::registry &registry)
 		Velocity &e_vel = registry.get<Velocity>(entity);
 		BoxCollider &e_bc = registry.get<BoxCollider>(entity);
 
-		if (e_vel.x == 0 && e_vel.y == 0) continue;
+		if (e_vel.x == 0 && e_vel.y == 0)
+			continue;
 
 		auto nx = (int)(e_tr.x + e_vel.x * GetFrameTime());
 		auto ny = (int)(e_tr.y + e_vel.y * GetFrameTime());
@@ -226,6 +231,8 @@ void camera_system(entt::registry &registry)
 	auto camera = registry.ctx().get<Camera2D>();
 	Rectangle camera_box = Rectangle{camera.target.x, camera.target.y, (float)GetScreenWidth(), (float)GetScreenHeight()};
 	BeginMode2D(camera);
+	// Removed invisible, as it was too expensive.
+	// If I need the behaviour, I can just look through old code.
 }
 
 void debug_rendering(entt::registry &registry)
