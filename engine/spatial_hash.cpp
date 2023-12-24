@@ -38,17 +38,17 @@ void remove_from_spatial_map(entt::registry &registry, entt::entity entity, std:
     if (position != map->end())
     {
         map->erase(position);
-        std::cout << "Removed from spatial map! [" << std::get<0>(key) << ',' << std::get<1>(key) << "]\n";
-        std::cout << "New size of the previous map is: " << map->size() << '\n';
+        //std::cout << "Removed from spatial map! [" << std::get<0>(key) << ',' << std::get<1>(key) << "]\n";
+        //std::cout << "New size of the previous map is: " << map->size() << '\n';
     }
 }
 
+// Currently does not account for an entity that is larger than SPATIAL_HASH_SIZE
 void add_to_spatial_map(entt::registry &registry, entt::entity entity, std::tuple<int, int> position_key)
 {
     auto *map = get_spatial_map(registry, position_key);
     map->push_back(entity);
-
-    std::cout << "Added to spatial map...[" << std::get<0>(position_key) << ',' << std::get<1>(position_key) << "]\n";
+    //std::cout << "Added to spatial map...[" << std::get<0>(position_key) << ',' << std::get<1>(position_key) << "]\n";
 }
 
 void update_global_spatial_maps(entt::registry &registry)

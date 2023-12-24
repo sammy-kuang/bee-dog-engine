@@ -8,10 +8,10 @@
 #include "resources.hpp"
 #include "prefabs.hpp"
 #include "serializer.hpp"
+#include "spatial_hash.hpp"
 #include <iostream>
 #include "imgui/imgui.h"
 #include "imgui/rlImGui.h"
-#include "spatial_hash.hpp"
 
 using std::vector;
 
@@ -35,7 +35,7 @@ int main(void)
 
 	// append systems
 	add_core_systems(systems);
-	// systems.push_back(debug_rendering);
+	systems.push_back(debug_rendering);
 
 	// create the camera
 	add_camera(registry);
@@ -51,14 +51,13 @@ int main(void)
 	// }
 
 	// it is soooo fast....
-	for (int i = 0; i < 1000; i++) {
-		create_sprite_entity(registry, "test.png", i*100, -200);
+	for (int i = 0; i < 100; i++) {
+		create_sprite_entity(registry, "test.png", i*100, 200);
 	}
 
 	// add player
 	auto p = create_sprite_entity(registry, "test.png");
 	registry.emplace<Player>(p);
-
 
 	rlImGuiSetup(true);
 

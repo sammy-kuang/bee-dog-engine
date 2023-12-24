@@ -226,32 +226,6 @@ void camera_system(entt::registry &registry)
 	auto camera = registry.ctx().get<Camera2D>();
 	Rectangle camera_box = Rectangle{camera.target.x, camera.target.y, (float)GetScreenWidth(), (float)GetScreenHeight()};
 	BeginMode2D(camera);
-	auto view = registry.view<BDTransform>(entt::exclude<AlwaysRender>);
-
-	for (auto &entity : view)
-	{
-		BDTransform &transform = registry.get<BDTransform>(entity);
-		Rectangle comparison = Rectangle{0, 0, 0, 0};
-		if (registry.try_get<Sprite>(entity) != nullptr)
-		{
-			auto s = registry.get<Sprite>(entity);
-			auto texture = registry.ctx().get<TextureCache>().load_resource(s.path);
-			comparison = Rectangle{transform.x - texture.width / 2.f, transform.y - texture.height / 2.f, (float)texture.width, (float)texture.height};
-		}
-		else if (registry.try_get<BoxCollider>(entity) != nullptr)
-		{
-			auto s = registry.get<BoxCollider>(entity).box;
-			comparison = Rectangle{s.x, s.y, (float)s.width, (float)s.height};
-		}
-
-		bool visible = registry.try_get<Invisible>(entity) == nullptr;
-		bool in_view = (comparison.width <= 0 || comparison.height <= 0) ? CheckCollisionPointRec(Vector2{transform.x, transform.y}, camera_box) : CheckCollisionRecs(comparison, camera_box);
-
-		if (!in_view && visible)
-			registry.emplace<Invisible>(entity);
-		else if (in_view && !visible)
-			registry.remove<Invisible>(entity);
-	}
 }
 
 void debug_rendering(entt::registry &registry)
