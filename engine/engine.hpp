@@ -1,8 +1,26 @@
 #include "raylib.h"
 #include "entt/entt.hpp"
+#include "systems.hpp"
+#include <vector>
+
+using std::vector;
 
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
+
+typedef void (*GameInit)(entt::registry &);
+
+struct Engine {
+    GameInit init;
+    vector<System> systems;
+	vector<System> ui_systems;
+    const char* title;
+    int window_width;
+    int window_height;
+};
+
+Engine init_engine(GameInit, const char*, int, int);
+void run_engine(Engine engine);
 
 void add_ctx(entt::registry &registry);
 

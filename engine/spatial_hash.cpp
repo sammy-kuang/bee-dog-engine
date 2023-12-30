@@ -48,7 +48,7 @@ void add_to_spatial_map(entt::registry &registry, entt::entity entity, std::tupl
     auto *map = get_spatial_map(registry, position_key);
     map->push_back(entity);
 
-    std::cout << "Added to spatial map...[" << std::get<0>(position_key) << ',' << std::get<1>(position_key) << "]\n";
+    // std::cout << "Added to spatial map...[" << std::get<0>(position_key) << ',' << std::get<1>(position_key) << "]\n";
 }
 
 void update_global_spatial_maps(entt::registry &registry)

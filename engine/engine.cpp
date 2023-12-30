@@ -1,14 +1,79 @@
+#include "components.hpp"
 #include "engine.hpp"
-
+#include "entt/entt.hpp"
+#include "imgui/imgui.h"
+#include "imgui/rlImGui.h"
 #include "raylib.h"
 #include "raymath.h"
-#include "entt/entt.hpp"
-#include <vector>
-#include <algorithm>
-#include <string>
-#include "components.hpp"
 #include "resources.hpp"
+#include "serializer.hpp"
 #include "spatial_hash.hpp"
+#include "prefabs.hpp"
+
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
+
+Engine init_engine(GameInit init, const char* title, int width, int height) {
+	return Engine {init, {}, {}, title, width, height};
+}
+
+// core engine loop!!
+void run_engine(Engine engine) {
+	// ecs related variables
+	entt::registry registry;
+
+	// initialize raylib
+	InitWindow(engine.window_width, engine.window_height, engine.title);
+	InitAudioDevice();
+	SetTargetFPS(240);
+
+	// append systems
+	add_core_systems(engine.systems);
+
+	// create the camera
+	add_camera(registry);
+
+	// initialize resource caches
+	add_ctx(registry);
+
+	// registry.on_construct<BoxCollider>().connect<&update_global_spatial_maps>(registry);
+	engine.init(registry);
+	update_global_spatial_maps(registry);
+
+	rlImGuiSetup(true);
+
+	while (!WindowShouldClose())
+	{
+		BeginDrawing();
+		ClearBackground(RAYWHITE);
+		rlImGuiBegin();
+
+		for (auto &system : engine.systems)
+		{
+			system(registry);
+		}
+
+		for (auto &ui_system : engine.ui_systems)
+		{
+			ui_system(registry);
+		}
+
+		EndMode2D(); // only has any effect if a camera exists
+		DrawFPS(0, 0);
+
+		rlImGuiEnd();
+		EndDrawing();
+	}
+
+	rlImGuiShutdown();
+
+	CloseWindow();
+
+
+}
 
 void add_ctx(entt::registry &registry)
 {
