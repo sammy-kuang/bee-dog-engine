@@ -20,6 +20,14 @@ Engine init_engine(GameInit init, const char* title, int width, int height) {
 	return Engine {init, {}, {}, title, width, height};
 }
 
+void add_system(Engine &e, System s) {
+	e.systems.push_back(s);
+}
+
+void add_ui_system(Engine &e, System s) {
+	e.ui_systems.push_back(s);
+}
+
 // core engine loop!!
 void run_engine(Engine engine) {
 	// ecs related variables
@@ -28,7 +36,7 @@ void run_engine(Engine engine) {
 	// initialize raylib
 	InitWindow(engine.window_width, engine.window_height, engine.title);
 	InitAudioDevice();
-	SetTargetFPS(240);
+	SetTargetFPS(60);
 
 	// append systems
 	add_core_systems(engine.systems);
@@ -62,8 +70,6 @@ void run_engine(Engine engine) {
 		}
 
 		EndMode2D(); // only has any effect if a camera exists
-		DrawFPS(0, 0);
-
 		rlImGuiEnd();
 		EndDrawing();
 	}

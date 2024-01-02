@@ -20,6 +20,8 @@ struct Engine {
 };
 
 Engine init_engine(GameInit, const char*, int, int);
+void add_system(Engine&, System);
+void add_ui_system(Engine&, System);
 void run_engine(Engine engine);
 
 void add_ctx(entt::registry &registry);

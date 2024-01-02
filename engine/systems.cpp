@@ -257,6 +257,8 @@ void debug_rendering(entt::registry &registry)
 
 	areas.each([](BoxArea &ba)
 			   { DrawRectangleRec(ba.create_area_rectangle(), Color{102, 191, 255, 125}); });
+
+	DrawFPS(0, 0);
 }
 
 void add_move_systems(std::vector<System> &systems)
