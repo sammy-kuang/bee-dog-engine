@@ -40,6 +40,7 @@ void run_engine(Engine engine) {
 
 	// append systems
 	add_core_systems(engine.systems);
+	add_system(engine, debug_rendering);
 
 	// create the camera
 	add_camera(registry);
