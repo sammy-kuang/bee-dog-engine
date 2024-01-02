@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(bd-engine CXX)
+project(bdengine CXX)
 
 if (EMSCRIPTEN)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY --preload-file assets/")
@@ -24,8 +24,7 @@ message("-- Added vendors")
 # Declare other projects and all subdirectories
 file (GLOB_RECURSE VENDORS CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/vendor/*.cpp")
 
-# Declaring our executable
-add_executable(${PROJECT_NAME})
+add_library(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE ${ENGINE_SOURCES} ${PROJECT_SOURCES} ${VENDORS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${ENGINE})
@@ -33,9 +32,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/ven
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
 # Compile the editor
-file(GLOB_RECURSE editor_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/editor/*.cpp")
-add_executable(editor)
-target_sources(editor PRIVATE ${ENGINE_SOURCES} ${editor_sources} ${VENDORS})
-target_include_directories(editor PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/)
-target_include_directories(editor PRIVATE ${ENGINE})
-target_link_libraries(editor PRIVATE raylib)
+# file(GLOB_RECURSE editor_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/editor/*.cpp")
+# add_executable(editor)
+# target_sources(editor PRIVATE ${ENGINE_SOURCES} ${editor_sources} ${VENDORS})
+# target_include_directories(editor PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/)
+# target_include_directories(editor PRIVATE ${ENGINE})
+# target_link_libraries(editor PRIVATE raylib)
