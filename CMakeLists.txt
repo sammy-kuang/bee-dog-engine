@@ -31,6 +31,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${ENGINE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/vendor/)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
+# used for testing the engine
+add_executable(debug_build)
+target_sources(debug_build PRIVATE ${PROJECT_SOURCES})
+target_include_directories(debug_build PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/ ${ENGINE})
+target_link_libraries(debug_build PRIVATE ${PROJECT_NAME} raylib)
+
 # Compile the editor
 # file(GLOB_RECURSE editor_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/editor/*.cpp")
 # add_executable(editor)
