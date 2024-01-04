@@ -2,6 +2,7 @@
 #include "components.hpp"
 #include "resources.hpp"
 #include "spatial_hash.hpp"
+#include "prefabs.hpp"
 #include "engine.hpp"
 #include <vector>
 #include <iostream>
@@ -182,6 +183,22 @@ void camera_system(entt::registry &registry)
 	BeginMode2D(camera);
 	// Removed invisible, as it was too expensive.
 	// If I need the behaviour, I can just look through old code.
+}
+
+void particle_system(entt::registry &registry) {
+	auto view = registry.view<Particle, BDTransform>();
+	for (auto &entity : view) {
+		Particle &p = registry.get<Particle>(entity);
+		BDTransform &t = registry.get<BDTransform>(entity);
+
+		if (p.lifetime <= 0) {
+			registry.destroy(entity);
+			continue;
+		}
+
+		p.draw(t.x, t.y);
+		p.lifetime -= GetFrameTime();
+	}
 }
 
 void debug_rendering(entt::registry &registry)

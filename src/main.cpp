@@ -57,18 +57,13 @@ void player_controller(entt::registry &registry)
 			v.x = 0;
 		}
 
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-		{
-			t.rotation += 5;
-		}
-		else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
-		{
-			t.rotation -= 5;
-		}
-
 		Camera2D &c = registry.ctx().get<Camera2D>();
 		// update the camera
 		c.target = Vector2{t.x - GetScreenWidth() / 2, t.y - GetScreenHeight() / 2};
+
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+			spawn_particle_system(registry, basic_particle_system, Vector2{t.x, t.y});
+		}
 	}
 }
 
@@ -76,6 +71,7 @@ int main(void)
 {
 	Engine engine = init_engine(init, "bee dog engine", SCREEN_WIDTH, SCREEN_HEIGHT);
 	add_system(engine, player_controller);
+	add_system(engine, particle_system);
 	run_engine(engine);
 	return 0;
 }

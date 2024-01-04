@@ -30,6 +30,9 @@ void move_box_areas(entt::registry &registry);
 // there should only be one camera in the registry
 void camera_system(entt::registry &registry);
 
+// particle system manager
+void particle_system(entt::registry &registry);
+
 // system to enable debug rendering (collisions primarily)
 void debug_rendering(entt::registry &registry);
 
