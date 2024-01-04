@@ -14,7 +14,6 @@ FetchContent_Declare(raylib GIT_REPOSITORY https://github.com/raysan5/raylib.git
 FetchContent_MakeAvailable(raylib)
 
 # Adding our source files
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp") # Define PROJECT_SOURCES as a list of all source files
 file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/engine/*.cpp")
 set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/") # Define PROJECT_INCLUDE to be the path to the include directory of the project
 set(ENGINE "${CMAKE_CURRENT_LIST_DIR}/engine/")
@@ -25,7 +24,7 @@ message("-- Added vendors")
 file (GLOB_RECURSE VENDORS CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/vendor/*.cpp")
 
 add_library(${PROJECT_NAME})
-target_sources(${PROJECT_NAME} PRIVATE ${ENGINE_SOURCES} ${PROJECT_SOURCES} ${VENDORS})
+target_sources(${PROJECT_NAME} PRIVATE ${ENGINE_SOURCES} ${VENDORS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${ENGINE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/vendor/)
@@ -33,6 +32,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
 # used for testing the engine
 add_executable(debug_build)
+file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
 target_sources(debug_build PRIVATE ${PROJECT_SOURCES})
 target_include_directories(debug_build PRIVATE ${PROJECT_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/vendor/ ${ENGINE})
 target_link_libraries(debug_build PRIVATE ${PROJECT_NAME} raylib)
