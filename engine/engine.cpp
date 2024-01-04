@@ -21,7 +21,29 @@
 
 Engine init_engine(GameInit init, const char *title, int width, int height)
 {
-	return Engine{init, {}, {}, {}, title, width, height};
+	Engine engine = Engine{init, {}, {}, {}, title, width, height};
+	// initialize raylib
+	InitWindow(engine.window_width, engine.window_height, engine.title);
+	InitAudioDevice();
+	SetTargetFPS(60);
+
+	// append systems
+	add_core_systems(engine.systems);
+	add_system(engine, debug_rendering);
+
+	// create the camera
+	add_camera(engine.registry);
+
+	// initialize resource caches
+	add_ctx(engine.registry);
+
+	engine.registry.on_construct<BoxCollider>().connect<&update_global_spatial_maps>(engine.registry);
+	engine.init(engine.registry);
+	update_global_spatial_maps(engine.registry);
+
+	rlImGuiSetup(true);
+
+	return engine;
 }
 
 void add_system(Engine &e, System s)
@@ -57,50 +79,29 @@ void update_loop(Engine &engine)
 	EndDrawing();
 }
 
-void web_loop(void* data) {
-	Engine* e = static_cast<Engine*>(data);
+void web_loop(void *data)
+{
+	Engine *e = static_cast<Engine *>(data);
 	update_loop(*e);
 }
 
-void run_engine(Engine& engine)
+void run_engine(Engine &engine)
 {
-	// initialize raylib
-	InitWindow(engine.window_width, engine.window_height, engine.title);
-	InitAudioDevice();
-	SetTargetFPS(60);
 
-	// append systems
-	add_core_systems(engine.systems);
-	add_system(engine, debug_rendering);
-
-	// create the camera
-	add_camera(engine.registry);
-
-	// initialize resource caches
-	add_ctx(engine.registry);
-
-	// registry.on_construct<BoxCollider>().connect<&update_global_spatial_maps>(registry);
-	engine.init(engine.registry);
-	update_global_spatial_maps(engine.registry);
-
-	rlImGuiSetup(true);
-
-	#ifndef PLATFORM_WEB
+#ifndef PLATFORM_WEB
 	while (!WindowShouldClose())
 	{
 		update_loop(engine);
 	}
-	#endif
-	#ifdef PLATFORM_WEB
+#endif
+#ifdef PLATFORM_WEB
 	emscripten_set_main_loop_arg(&web_loop, &engine, 0, 1);
-	#endif
+#endif
 
 	rlImGuiShutdown();
 
 	CloseWindow();
 }
-
-
 
 void add_ctx(entt::registry &registry)
 {

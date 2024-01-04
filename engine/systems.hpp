@@ -16,8 +16,6 @@ void apply_velocity(entt::registry &registry);
 
 void sort_sprites_by_z(entt::registry &registry);
 
-void player_controller(entt::registry &registry);
-
 // move collision boxes to the transform position
 void move_box_collisions(entt::registry &registry);
 

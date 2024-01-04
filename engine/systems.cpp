@@ -74,57 +74,6 @@ void sort_sprites_by_z(entt::registry &registry)
 							   { return l.z < r.z; });
 }
 
-void player_controller(entt::registry &registry)
-{
-	auto view = registry.view<Player, Velocity, BDTransform>();
-	auto camera_view = registry.view<Camera2D>();
-
-	for (auto &player : view)
-	{
-		int speed = 250;
-		BDTransform &t = registry.get<BDTransform>(player);
-		Velocity &v = registry.get<Velocity>(player);
-		if (IsKeyDown(KEY_W))
-		{
-			v.y = -speed;
-		}
-		else if (IsKeyDown(KEY_S))
-		{
-			v.y = speed;
-		}
-		else
-		{
-			v.y = 0;
-		}
-
-		if (IsKeyDown(KEY_A))
-		{
-			v.x = -speed;
-		}
-		else if (IsKeyDown(KEY_D))
-		{
-			v.x = speed;
-		}
-		else
-		{
-			v.x = 0;
-		}
-
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-		{
-			t.rotation += 5;
-		}
-		else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
-		{
-			t.rotation -= 5;
-		}
-
-		Camera2D &c = registry.ctx().get<Camera2D>();
-		// update the camera
-		c.target = Vector2{t.x - GetScreenWidth() / 2, t.y - GetScreenHeight() / 2};
-	}
-}
-
 void move_box_collisions(entt::registry &registry)
 {
 	auto view = registry.view<BDTransform, BoxCollider>();
@@ -272,5 +221,4 @@ void add_core_systems(std::vector<System> &systems)
 	systems.push_back(draw_sprites);
 	systems.push_back(handle_box_collisions);
 	systems.push_back(apply_velocity);
-	systems.push_back(player_controller);
 }
