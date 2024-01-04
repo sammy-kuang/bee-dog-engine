@@ -10,70 +10,97 @@
 #include "spatial_hash.hpp"
 #include "prefabs.hpp"
 
+#ifdef PLATFORM_WEB
+#include <emscripten/emscripten.h>
+#endif
+
 #include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
 
-
-Engine init_engine(GameInit init, const char* title, int width, int height) {
-	return Engine {init, {}, {}, title, width, height};
+Engine init_engine(GameInit init, const char *title, int width, int height)
+{
+	return Engine{init, {}, {}, {}, title, width, height};
 }
 
-// core engine loop!!
-void run_engine(Engine engine) {
-	// ecs related variables
-	entt::registry registry;
+void add_system(Engine &e, System s)
+{
+	e.systems.push_back(s);
+}
 
+void add_ui_system(Engine &e, System s)
+{
+	e.ui_systems.push_back(s);
+}
+
+void update_loop(Engine &engine)
+{
+	BeginDrawing();
+	ClearBackground(RAYWHITE);
+	rlImGuiBegin();
+
+	for (auto &system : engine.systems)
+	{
+		system(engine.registry);
+	}
+
+	EndMode2D(); // only has any effect if a camera exists
+
+	for (auto &ui_system : engine.ui_systems)
+	{
+		ui_system(engine.registry);
+	}
+
+	DrawFPS(0, 0);
+	rlImGuiEnd();
+	EndDrawing();
+}
+
+void web_loop(void* data) {
+	Engine* e = static_cast<Engine*>(data);
+	update_loop(*e);
+}
+
+void run_engine(Engine& engine)
+{
 	// initialize raylib
 	InitWindow(engine.window_width, engine.window_height, engine.title);
 	InitAudioDevice();
-	SetTargetFPS(240);
+	SetTargetFPS(60);
 
 	// append systems
 	add_core_systems(engine.systems);
+	add_system(engine, debug_rendering);
 
 	// create the camera
-	add_camera(registry);
+	add_camera(engine.registry);
 
 	// initialize resource caches
-	add_ctx(registry);
+	add_ctx(engine.registry);
 
 	// registry.on_construct<BoxCollider>().connect<&update_global_spatial_maps>(registry);
-	engine.init(registry);
-	update_global_spatial_maps(registry);
+	engine.init(engine.registry);
+	update_global_spatial_maps(engine.registry);
 
 	rlImGuiSetup(true);
 
+	#ifndef PLATFORM_WEB
 	while (!WindowShouldClose())
 	{
-		BeginDrawing();
-		ClearBackground(RAYWHITE);
-		rlImGuiBegin();
-
-		for (auto &system : engine.systems)
-		{
-			system(registry);
-		}
-
-		for (auto &ui_system : engine.ui_systems)
-		{
-			ui_system(registry);
-		}
-
-		EndMode2D(); // only has any effect if a camera exists
-		DrawFPS(0, 0);
-
-		rlImGuiEnd();
-		EndDrawing();
+		update_loop(engine);
 	}
+	#endif
+	#ifdef PLATFORM_WEB
+	emscripten_set_main_loop_arg(&web_loop, &engine, 0, 1);
+	#endif
 
 	rlImGuiShutdown();
 
 	CloseWindow();
-
-
 }
+
+
 
 void add_ctx(entt::registry &registry)
 {

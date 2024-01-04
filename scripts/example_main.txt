@@ -1,0 +1,26 @@
+#include "entt/entt.hpp"
+#include "engine.hpp"
+#include "raylib.h"
+#include "resources.hpp"
+#include "serializer.hpp"
+#include "systems.hpp"
+#include "prefabs.hpp"
+
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 900
+
+void init(entt::registry& registry) {
+	
+}
+
+void basic_system(entt::registry& registry) {
+	DrawFPS(0, 0);
+}
+
+int main(void)
+{
+	Engine engine = init_engine(init, "bee dog engine", SCREEN_WIDTH, SCREEN_HEIGHT);
+	add_system(engine, basic_system);
+	run_engine(engine);
+	return 0;
+}

@@ -14,13 +14,16 @@ struct Engine {
     GameInit init;
     vector<System> systems;
 	vector<System> ui_systems;
+    entt::registry registry;
     const char* title;
     int window_width;
     int window_height;
 };
 
 Engine init_engine(GameInit, const char*, int, int);
-void run_engine(Engine engine);
+void add_system(Engine&, System);
+void add_ui_system(Engine&, System);
+void run_engine(Engine& engine);
 
 void add_ctx(entt::registry &registry);
 
