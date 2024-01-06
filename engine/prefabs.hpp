@@ -31,7 +31,4 @@ struct ParticleSystem {
 
 void spawn_particle_system(entt::registry &registry, ParticleSystem part_system, Vector2 position);
 
-void draw_red_circle(int x, int y);
-const ParticleSystem basic_particle_system = {5.f, 12, Vector2{0, -1}, 500, 25 * PI / 180, draw_red_circle};
-
 #endif

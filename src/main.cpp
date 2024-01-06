@@ -21,6 +21,13 @@ void init(entt::registry& registry) {
 	registry.emplace<Player>(p);
 }
 
+void draw_red_circle(int x, int y) {
+    DrawCircle(x, y, 2, RED);
+}
+
+const ParticleSystem basic_particle_system {5., 10, Vector2{0, -1}, 1000, 85 * PI / 180, draw_red_circle};
+const ParticleSystem basic_particle_system_2 {5., 10, Vector2{0, 1}, 1000, 85 * PI / 180, draw_red_circle};
+
 void player_controller(entt::registry &registry)
 {
 	auto view = registry.view<Player, Velocity, BDTransform>();
@@ -63,6 +70,7 @@ void player_controller(entt::registry &registry)
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 			spawn_particle_system(registry, basic_particle_system, Vector2{t.x, t.y});
+			spawn_particle_system(registry, basic_particle_system_2, Vector2{t.x, t.y});
 		}
 	}
 }

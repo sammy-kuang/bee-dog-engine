@@ -40,7 +40,3 @@ void spawn_particle_system(entt::registry &registry, ParticleSystem part_system,
         registry.emplace<Particle>(p, part_system.draw, part_system.lifetime);
     }
 }
-
-void draw_red_circle(int x, int y) {
-    DrawCircle(x, y, 2, RED);
-}
